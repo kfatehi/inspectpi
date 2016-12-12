@@ -1,18 +1,18 @@
 this is a wishlist...
 
-inspectpi wifi selection
+sd card prep
+* download/cache/show images (raspbian)
+* be able to burn from this selection
+* visually inspect current SD
+* inspect SD's boot partition
+* show device overlay and cmdline configuration
+* make this human-readable and alterable
 
-be able to cache sd's
 
-be able to burn sd's
+wireless related
+* check wlan1 state
+* reconfigure wlan1
 
-visually inspect current SD
-
-inspect SD's boot partition
-
-show device overlay and cmdline configuration
-
-make this human-readable and alterable
 
 be able to configure the wifi of some other pi
 3 ways:
