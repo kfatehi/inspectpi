@@ -1,0 +1,25 @@
+put this in config.txt
+dtoverlay=pi3-disable-bt
+
+in /boot/overlays/README it says
+
+Name:   pi3-disable-bt
+Info:   Disable Pi3 Bluetooth and restore UART0/ttyAMA0 over GPIOs 14 & 15
+        N.B. To disable the systemd service that initialises the modem so it
+        doesn't use the UART, use 'sudo systemctl disable hciuart'.
+Load:   dtoverlay=pi3-disable-bt
+Params: <None>
+
+so you should run 
+
+sudo systemctl disable hciuart
+
+to connect to a serial console you can use minicom
+
+sudo apt-get install minicom
+
+and then
+
+minicom -D /dev/ttyAMA0
+
+
