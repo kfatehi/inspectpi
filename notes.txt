@@ -28,3 +28,9 @@ sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 in /etc/network/interfaces add this to autoload it
 up iptables-restore < /etc/iptables.ipv4.nat
 
+
+# aight now we need a web interface
+# lets get nodejs
+
+curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+sudo apt-get install nodejs
