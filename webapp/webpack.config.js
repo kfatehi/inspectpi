@@ -3,11 +3,19 @@ const webpack = require('webpack');
 
 module.exports = {
   devtool: 'source-map',
-  entry: `${__dirname}/src/client/index.jsx`,
+  entry: {
+    vendor: [
+      'redux',
+      'react',
+      'react-dom',
+      'react-redux',
+      "react-router",
+    ],
+    main: `${__dirname}/src/client/index.jsx`,
+  },
   output: {
     path: `${__dirname}/public`,
-    library: 'bundle',
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
@@ -27,7 +35,10 @@ module.exports = {
       { test: /\.jpe?g$/, loader: "file" },
       { test: /\.gif$/, loader: "file" },
       { test: /\.csv$/, loader: "raw" },
+    ],
+    plugins: [
+      new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.bundle.js")
     ]
   }
-};
+}
 

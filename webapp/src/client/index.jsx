@@ -9,6 +9,8 @@ import appReducer from './reducers/app';
 import io from 'socket.io-client';
 import * as actionCreators from './action-creators';
 
+import './styles/index.less';
+
 const socket = io();
 
 const reducer = combineReducers({
