@@ -4,10 +4,10 @@ A combination pi3+piZero remote access tool and development platform... in the m
 
 # Access Point
 
-SSID: InspectPi
-Password: inspectpi
-IP (wlan0): 10.4.20.1
-Hostname: inspectpi
+* SSID: InspectPi
+* Password: inspectpi
+* IP (wlan0): 10.4.20.1
+* Hostname: inspectpi
 
 Access point provided by wlan0
 
@@ -19,8 +19,8 @@ If no internet access is available, you need to configure the wlan1
 
 ## SSH
 
-User: pi
-Password: raspberry
+* User: pi
+* Password: raspberry
 
 ssh pi@inspectpi.local
 
