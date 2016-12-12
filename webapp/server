@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+const express = require('express');
+const app = express();
+const args = require('minimist')(process.argv);
+const PORT = process.env.PORT || args.p || args.port || 3000;
+
+app.use(express.static(__dirname+'/public'));
+
+app.listen(PORT);
+console.log('listening on '+PORT);

@@ -1,0 +1,27 @@
+this is a wishlist...
+
+inspectpi wifi selection
+
+be able to cache sd's
+
+be able to burn sd's
+
+visually inspect current SD
+
+inspect SD's boot partition
+
+show device overlay and cmdline configuration
+
+make this human-readable and alterable
+
+be able to configure the wifi of some other pi
+3 ways:
+* mount root partition of target's sd card and write to wpa_supplicant
+* pre-config target's sd card to connect console to UART pins
+* use the pi-zero as an ethernet/USB nic
+
+once on the target's network
+* scan wifi network
+* configure correctly the first time
+
+
