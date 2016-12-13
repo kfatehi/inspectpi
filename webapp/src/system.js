@@ -45,7 +45,7 @@ class System extends EventEmitter {
   setFact(name, val) {
     console.log('set fact', name);
     this.state[name] = val;
-    this.emit('stateChange', this.state);
+    this.emit('change');
   }
   updateFacts(list) {
     return Promise.mapSeries(list, (factName) => {
@@ -95,6 +95,10 @@ class System extends EventEmitter {
     }).catch((err) =>
       update({ associating: false, error: err.message })
     )
+  }
+  wifiClientScanEnd() {
+    const update = (val) => this.setFact('wifiClientScanStatus', val);
+    update({ scanning: false, baseStations: [] });
   }
 }
 

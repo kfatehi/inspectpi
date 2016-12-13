@@ -8,3 +8,8 @@ export const wifiClientAssociate = (address, ssid, psk) => ({
   type: 'WIFI_CLIENT_ASSOC',
   address, ssid, psk
 })
+
+export const wifiClientCloseScanner = () => ({
+  meta: { remote: true },
+  type: 'WIFI_CLIENT_SCAN_END'
+})
