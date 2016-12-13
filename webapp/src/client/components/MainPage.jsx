@@ -4,11 +4,22 @@ import * as actionCreators from '../action-creators';
 
 import { Disks } from './Disks';
 import { Images } from './Images';
+import { WifiClient } from './WifiClient';
 
 export const MainPage = connect(state=>state, actionCreators)(({
   disks,
-  images
+  images,
+  wifiClient,
+  wifiClientScanStatus,
+  wifiClientPerformScan,
+  wifiClientAssociate
 })=><div>
   <Disks disks={disks}/>
   <Images images={images}/>
+  <WifiClient
+    status={wifiClient}
+    scan={wifiClientPerformScan}
+    associate={wifiClientAssociate}
+    scanStatus={wifiClientScanStatus}
+  />
 </div>);

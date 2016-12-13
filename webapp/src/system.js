@@ -8,6 +8,7 @@ const path = require('path');
 const lsblk = require('../lib/lsblk');
 const INITIAL_STATE = require('./initial-state');
 const watchOpts = {ignoreInitial: true};
+const wifi = require('../lib/wifi');
 const { 
   sdCardDevicePath,
   imagesPath
@@ -19,7 +20,7 @@ class System extends EventEmitter {
     this.watchDisks(()=>this.updateFacts(['disks']));
     this.watchImages(()=>this.updateFacts(['images']));
     return this.updateFacts([
-      'disks', 'images' 'wifi-client'
+      'disks', 'images', 'wifiClient'
     ]);
   }
   watchDisks(reaction) {
@@ -43,10 +44,10 @@ class System extends EventEmitter {
     return Promise.mapSeries(list, (factName) => {
       const getFactValue = () => {
         switch (factName) {
-          case 'disks': return this.getDisks()
-          case 'images': return this.getImages()
-            //case 'wifi-client': return this.wifiClient.getStatus().then(this.setFact(factName))
-          default: throw new Error('dont know how to update fact '+factName)
+          case 'disks': return this.getDisks();
+          case 'images': return this.getImages();
+          case 'wifiClient': return this.getWifiClientStatus();
+          default: throw new Error('dont know how to update fact '+factName);
         }
       }
       return getFactValue().then((value)=>this.setFact(factName, value));
@@ -66,6 +67,16 @@ class System extends EventEmitter {
         name, size
       }))
     )
+  }
+  getWifiClientStatus() {
+    return wifi.getStatus('wlan1');
+  }
+  wifiClientScan() {
+    const update = (val) => this.setFact('wifiClientScanStatus', val);
+    update({ scanning: true, baseStations: [] });
+    return wifi.scan('wlan1').then((baseStations) => {
+      return update({ scanning: false, baseStations })
+    })
   }
 }
 
