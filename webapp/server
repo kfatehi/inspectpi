@@ -15,6 +15,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('*', (req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
 
 const core = new Core(io);
+core.initSystem().then(function() {
+  http.listen(PORT);
+  console.log('listening on '+PORT);
+})
 
-http.listen(PORT);
-console.log('listening on '+PORT);
