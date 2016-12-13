@@ -1,11 +1,11 @@
 const spawn = require('child_process').spawn;
 const Promise = require('bluebird');
-const concat = require('concat-stream');
 const EventEmitter = require('events').EventEmitter;
 const chokidar = require('chokidar');
 const readdir = Promise.promisify(require('fs').readdir);
 const stat = Promise.promisify(require('fs').stat);
 const path = require('path');
+const lsblk = require('../lib/lsblk');
 const { 
   sdCardDevicePath,
   imagesPath
@@ -48,18 +48,12 @@ class System extends EventEmitter {
     });
   }
   getDisks() {
-    let cmd = 'lsblk';
-    let opts = ['-P', '-b', '-d', '-o', 'NAME,SIZE'];
-    let parse = (str) => str.trim().split('\n').map(line => {
-      let [_,name, size] = line.match(/NAME="(.+)" SIZE="(.+)"/)
-      return {name, size}
-    });
-    return new Promise((resolve, reject) => {
-      let o, e, proc = spawn('lsblk', opts);
-      proc.stdout.pipe(concat(d=>o=d.toString()))
-      proc.stderr.pipe(concat(d=>e=d.toString()))
-      proc.on('exit', (code) => code === 0 ? resolve(o) : reject(e))
-    }).then(parse)
+    return lsblk(['name', 'size', 'type', 'mountpoint']).then((disks) => {
+      // we are only interested in /dev/sda
+      return disks.filter(({name, type})=>
+        name.match(/^sda\d?/) && type === "disk"
+      )
+    })
   }
   getImages() {
     return readdir(imagesPath).map((name) =>
