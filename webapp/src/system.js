@@ -34,9 +34,9 @@ class System extends EventEmitter {
   }
   getDisks() {
     let cmd = 'lsblk';
-    let opts = ['-P', '-b', '-d', '-o', 'NAME,SIZE'];
+    let opts = ['-P', '-d', '-o', 'NAME,SIZE'];
     let parse = (str) => str.trim().split('\n').map(line => {
-      let [_,name, size] = line.match(/NAME="(.+)" SIZE="(\d+)"/)
+      let [_,name, size] = line.match(/NAME="(.+)" SIZE="(.+)"/)
       return {name, size}
     });
     return new Promise((resolve, reject) => {

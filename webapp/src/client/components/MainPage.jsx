@@ -2,16 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../action-creators';
 
-const C = React.createClass({
-  render: function () {
-    return <div>Hello</div>;
-  }
-})
+import { Disks } from './Disks';
 
-function mapStateToProps(state) {
-  return {
-    loginError: state.sdcard
-  }
-}
-
-export const MainPage = connect(mapStateToProps, actionCreators)(C);
+export const MainPage = connect(state=>state, actionCreators)(({
+  disks
+})=><div>
+  <Disks disks={disks}/>
+</div>);

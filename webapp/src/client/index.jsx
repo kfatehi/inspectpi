@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import App from './components/App';
-import MainPage from './components/MainPage';
+import { MainPage } from './components/MainPage';
 import appReducer from './reducers/app';
 import io from 'socket.io-client';
 import * as actionCreators from './action-creators';
@@ -12,8 +12,6 @@ import * as actionCreators from './action-creators';
 import './styles/index.less';
 
 const socket = io();
-
-const reducer = appReducer;
 
 const remoteActionMiddleware = socket => store => next => action => {
   if (action.meta && action.meta.remote) {
@@ -26,7 +24,7 @@ const createStoreWithMiddleware = applyMiddleware(
   remoteActionMiddleware(socket)
 )(createStore);
 
-const store = createStoreWithMiddleware(reducer);
+const store = createStoreWithMiddleware(appReducer);
 
 socket.on('action', action => {
   console.log('incoming socket action', action);
