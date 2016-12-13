@@ -6,17 +6,18 @@ const express = require("express");
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const morgan = require('morgan')
+const morgan = require('morgan');
 const Core = require('./src/core');
+const PUBLIC_DIR = path.join(__dirname, 'public');
+const INDEX_HTML = path.join(PUBLIC_DIR,'index.html');
 
 app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(PUBLIC_DIR));
 
-app.get('*', (req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+app.get('*', (_,res)=>res.sendFile(INDEX_HTML));
 
-const core = new Core(io);
-core.initSystem().then(function() {
-  http.listen(PORT);
-  console.log('listening on '+PORT);
-})
+const core = new Core();
 
+core.init(io).then(()=> http.listen(PORT) ).then(
+  console.log('listening on '+PORT)
+)

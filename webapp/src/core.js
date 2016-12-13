@@ -1,14 +1,13 @@
 const System = require('./system');
 
 class Core {
-  constructor(io) {
-    this.io = io;
+  init(io){
+    this.io = io
     this.system = new System();
-    this.system.on('stateChange', () => this.sendState())
-    io.on('connection', s=>this.acceptSocket(s));
-  }
-  initSystem () {
-    return this.system.init();
+    this.system.on('stateChange', ()=> this.sendState())
+    return this.system.init().then(()=>
+      this.io.on('connection', s=>this.acceptSocket(s))
+    ).then(()=>this)
   }
   handleAction (action) {
     console.log('server got action', action);
