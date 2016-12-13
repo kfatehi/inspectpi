@@ -15,9 +15,11 @@ export const MainPage = connect(state=>state, actionCreators)(({
   wifiClientCloseScanner,
   wifiClientAssociate,
   wifiClientAssocStatus,
+  burnStatus,
+  burnImageToDisk,
 })=><div>
   <Disks disks={disks}/>
-  <Images images={images}/>
+  <Images disks={disks} images={images} burnStatus={burnStatus} />
   <WifiClient
     status={wifiClient}
     closeScanner={wifiClientCloseScanner}

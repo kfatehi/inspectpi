@@ -13,3 +13,9 @@ export const wifiClientCloseScanner = () => ({
   meta: { remote: true },
   type: 'WIFI_CLIENT_SCAN_END'
 })
+
+export const burnImageToDisk = (imageName, diskName) => ({
+  meta: { remote: true },
+  type: 'BURN_IMAGE_TO_DISK',
+  imageName, diskName
+})
