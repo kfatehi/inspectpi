@@ -5,7 +5,9 @@ import * as actionCreators from '../action-creators';
 import { Disks } from './Disks';
 
 export const MainPage = connect(state=>state, actionCreators)(({
-  disks
+  disks,
+  images
 })=><div>
   <Disks disks={disks}/>
+  <Images images={images}/>
 </div>);

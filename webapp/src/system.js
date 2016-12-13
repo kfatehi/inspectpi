@@ -8,9 +8,15 @@ class System extends EventEmitter {
   init() {
     this.state = {};
 
-    this.sdWatcher = chokidar.watch('/dev/sda', { ignoreInitial: true });
+    let watchOpts = { ignoreInitial: true };
+    this.sdWatcher = chokidar.watch('/dev/sda', watchOpts);
     this.sdWatcher
       .on('change', () => this.updateFacts(['disks']))
+
+    //let imagesDir = __dirname+'/../storage';
+    //this.imgWatcher = chokidar.watch(imagesDir, watchOpts);
+    //this.imgWatcher
+    //  .on('change', () => this.updateFacts(['disks']))
 
     return this.updateFacts(['disks']);
   }
