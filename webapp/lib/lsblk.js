@@ -16,7 +16,7 @@ module.exports = function(fields) {
     return obj
   });
   return new Promise((resolve, reject) => {
-    let o, e, proc = spawn('lsblk', opts);
+    let o, e, proc = spawn(cmd, opts);
     proc.stdout.pipe(concat(d=>o=d.toString()))
     proc.stderr.pipe(concat(d=>e=d.toString()))
     proc.on('exit', (code) => code === 0 ? resolve(o) : reject(e))

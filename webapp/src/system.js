@@ -8,6 +8,7 @@ const path = require('path');
 const lsblk = require('../lib/lsblk');
 const INITIAL_STATE = require('./initial-state');
 const watchOpts = {ignoreInitial: true};
+const WirelessEvents = require('../lib/wireless-events');
 const wifi = require('../lib/wifi');
 const { 
   sdCardDevicePath,
@@ -19,6 +20,12 @@ class System extends EventEmitter {
     this.state = INITIAL_STATE;
     this.watchDisks(()=>this.updateFacts(['disks']));
     this.watchImages(()=>this.updateFacts(['images']));
+    this.watchWifiClient = new WirelessEvents();
+    this.watchWifiClient.on('wlan1', () => {
+      console.log('wlan1 change');
+      this.updateFacts([ 'wifiClient' ])
+    });
+    this.watchWifiClient.start();
     return this.updateFacts([
       'disks', 'images', 'wifiClient'
     ]);
@@ -72,11 +79,21 @@ class System extends EventEmitter {
     return wifi.getStatus('wlan1');
   }
   wifiClientScan() {
+    this.setFact('wifiClientAssocStatus', {});
     const update = (val) => this.setFact('wifiClientScanStatus', val);
     update({ scanning: true, baseStations: [] });
     return wifi.scan('wlan1').then((baseStations) => {
       return update({ scanning: false, baseStations })
     })
+  }
+  wifiClientAssoc({ address, ssid, psk}) {
+    const update = (val) => this.setFact('wifiClientAssocStatus', {[address]: val});
+    update({ associating: true })
+    return wifi.associate('wlan1', address, ssid, psk).then(()=>
+      update({ associating: false, error: null })
+    ).catch((err) =>
+      update({ associating: false, error: err.message })
+    )
   }
 }
 

@@ -13,6 +13,7 @@ class Core {
   handleAction (action) {
     switch (action.type) {
       case 'WIFI_CLIENT_SCAN': return this.system.wifiClientScan();
+      case 'WIFI_CLIENT_ASSOC': return this.system.wifiClientAssoc(action);
       default: throw new Error('dont know how to handle action '+action.type);
     }
   }

@@ -9,5 +9,6 @@ module.exports = {
   wifiClientScanStatus: {
     scanning: false,
     baseStations: []
-  }
+  },
+  wifiClientAssocStatus: {}
 };

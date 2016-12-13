@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const iwconfig = require('wireless-tools/iwconfig');
 const iwlist = require('wireless-tools/iwlist');
+const wpa_cli = require('./wpa_cli');
 
 
 module.exports.getStatus = function(iface) {
@@ -18,5 +19,20 @@ module.exports.scan = function(iface) {
       if ( err ) return reject(err);
       resolve(networks);
     });
+  });
+}
+
+module.exports.associate = function(iface, address, ssid, psk) {
+  let cli = wpa_cli('wlan1');
+  return cli('set_network', 0, 'ssid', `"${ssid}"`).then(() => {
+    return cli('set_network', 0, 'psk', `"${psk}"`)
+  }).then(()=>{
+    return cli('set_network', 0, 'bssid', address)
+  }).then(()=>{
+    return cli("save");
+  }).then(()=>{
+    return cli("disconnect");
+  }).then(()=>{
+    return cli("reconnect");
   });
 }

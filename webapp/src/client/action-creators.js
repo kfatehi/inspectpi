@@ -3,7 +3,8 @@ export const wifiClientPerformScan = () => ({
   type: 'WIFI_CLIENT_SCAN'
 })
 
-export const wifiClientAssociate = (ssid, psk) => ({
+export const wifiClientAssociate = (address, ssid, psk) => ({
   meta: { remote: true },
-  type: 'WIFI_CLIENT_ASSOC', ssid, psk
+  type: 'WIFI_CLIENT_ASSOC',
+  address, ssid, psk
 })
