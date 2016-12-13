@@ -32,14 +32,13 @@ class System extends EventEmitter {
   }
   setFact(name, val) {
     return val => {
-      console.log('set fact', name, val);
+      console.log('set fact', name);
       this.state[name] = val;
       this.emit('stateChange', this.state);
     }
   }
   updateFacts(list) {
     return Promise.mapSeries(list, (factName) => {
-      console.log('updating fact', factName);
       switch (factName) {
         case 'disks': return this.getDisks().then(this.setFact(factName))
         case 'images': return this.getImages().then(this.setFact(factName))

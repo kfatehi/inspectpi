@@ -24,7 +24,7 @@ class Core {
   sendState () {
     let state = this.system.getState();
     this.io.emit('action', { type: "SET_STATE", state });
-    console.log('sent state', state);
+    console.log('sent state', Object.keys(state));
   }
 }
 

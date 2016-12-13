@@ -33,7 +33,8 @@
     "socket.io": "^1.7.2",
     "socket.io-client": "^1.7.2",
     "style-loader": "^0.13.1",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "wireless-tools": "^0.18.1"
   },
   "babel": {
     "presets": [
