@@ -13,7 +13,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
   wifiClientScanStatus,
   wifiClientPerformScan,
   wifiClientAssociate,
-  wifiClientAssocStatus
+  wifiClientAssocStatus,
 })=><div>
   <Disks disks={disks}/>
   <Images images={images}/>

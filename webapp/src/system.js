@@ -89,9 +89,10 @@ class System extends EventEmitter {
   wifiClientAssoc({ address, ssid, psk}) {
     const update = (val) => this.setFact('wifiClientAssocStatus', {[address]: val});
     update({ associating: true })
-    return wifi.associate('wlan1', address, ssid, psk).then(()=>
-      update({ associating: false, error: null })
-    ).catch((err) =>
+    return wifi.associate('wlan1', address, ssid, psk).then(()=> {
+      update({ associating: false, error: null });
+      this.setFact('wifiClientScanStatus', { scanning: false, baseStations: [] });
+    }).catch((err) =>
       update({ associating: false, error: err.message })
     )
   }
