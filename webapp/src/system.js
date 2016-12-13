@@ -18,7 +18,9 @@ class System extends EventEmitter {
     this.state = INITIAL_STATE;
     this.watchDisks(()=>this.updateFacts(['disks']));
     this.watchImages(()=>this.updateFacts(['images']));
-    return this.updateFacts(['disks', 'images']);
+    return this.updateFacts([
+      'disks', 'images' 'wifi-client'
+    ]);
   }
   watchDisks(reaction) {
     this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
@@ -33,20 +35,22 @@ class System extends EventEmitter {
     return this.state;
   }
   setFact(name, val) {
-    return val => {
-      console.log('set fact', name);
-      this.state[name] = val;
-      this.emit('stateChange', this.state);
-    }
+    console.log('set fact', name);
+    this.state[name] = val;
+    this.emit('stateChange', this.state);
   }
   updateFacts(list) {
     return Promise.mapSeries(list, (factName) => {
-      switch (factName) {
-        case 'disks': return this.getDisks().then(this.setFact(factName))
-        case 'images': return this.getImages().then(this.setFact(factName))
-        default: console.error('dont know how to update fact', factName)
+      const getFactValue = () => {
+        switch (factName) {
+          case 'disks': return this.getDisks()
+          case 'images': return this.getImages()
+            //case 'wifi-client': return this.wifiClient.getStatus().then(this.setFact(factName))
+          default: throw new Error('dont know how to update fact '+factName)
+        }
       }
-    });
+      return getFactValue().then((value)=>this.setFact(factName, value));
+    })
   }
   getDisks() {
     return lsblk(['name', 'size', 'type', 'mountpoint']).then((disks) => {
