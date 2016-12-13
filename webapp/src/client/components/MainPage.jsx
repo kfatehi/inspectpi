@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../action-creators';
 
 import { Disks } from './Disks';
+import { Images } from './Images';
 
 export const MainPage = connect(state=>state, actionCreators)(({
   disks,

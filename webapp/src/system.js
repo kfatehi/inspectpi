@@ -6,7 +6,7 @@ const chokidar = require('chokidar');
 
 class System extends EventEmitter {
   init() {
-    this.state = {};
+    this.state = require('./initial-state');
 
     let watchOpts = { ignoreInitial: true };
     this.sdWatcher = chokidar.watch('/dev/sda', watchOpts);
