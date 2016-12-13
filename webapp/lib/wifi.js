@@ -23,7 +23,7 @@ module.exports.scan = function(iface) {
 }
 
 module.exports.associate = function(iface, address, ssid, psk) {
-  let cli = wpa_cli('wlan1');
+  let cli = wpa_cli(iface);
   return Promise.mapSeries([
     ['set_network', 0, 'ssid', `"${ssid}"`],
     ['set_network', 0, 'psk', `"${psk}"`],
