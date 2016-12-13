@@ -6,6 +6,8 @@ const readdir = Promise.promisify(require('fs').readdir);
 const stat = Promise.promisify(require('fs').stat);
 const path = require('path');
 const lsblk = require('../lib/lsblk');
+const INITIAL_STATE = require('./initial-state');
+const watchOpts = {ignoreInitial: true};
 const { 
   sdCardDevicePath,
   imagesPath
@@ -13,19 +15,19 @@ const {
 
 class System extends EventEmitter {
   init() {
-    this.state = require('./initial-state');
-
-    let watchOpts = {ignoreInitial: true};
-    this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
-    this.sdWatcher.on('change', () => this.updateFacts(['disks']))
-
-    this.imgWatcher = chokidar.watch(imagesPath, watchOpts);
-    this.imgWatcher
-      .on('add', () => this.updateFacts(['images']))
-      .on('change', () => this.updateFacts(['images']))
-      .on('unlink', () => this.updateFacts(['images']))
-
+    this.state = INITIAL_STATE;
+    this.watchDisks(()=>this.updateFacts(['disks']));
+    this.watchImages(()=>this.updateFacts(['images']));
     return this.updateFacts(['disks', 'images']);
+  }
+  watchDisks(reaction) {
+    this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
+    this.sdWatcher.on('change', reaction)
+  }
+  watchImages(reaction) {
+    this.imgWatcher = chokidar.watch(imagesPath, watchOpts);
+    const events = ['add', 'change', 'unlink']
+    events.forEach(evt => this.imgWatcher.on(evt, reaction))
   }
   getState() {
     return this.state;
