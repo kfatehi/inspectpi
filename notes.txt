@@ -68,3 +68,24 @@ sudo mount -t auto -o loop,offset=$((8192*512)) images/2016-11-25-raspbian-jessi
 sudo mount -t auto -o loop,offset=$((137216*512)) images/2016-11-25-raspbian-jessie-lite.img mnt
 
 # source http://www.linuxquestions.org/questions/linux-general-1/how-to-mount-img-file-882386/
+
+##--- 
+
+installed and configured udhcpd on the zero. didn't test yet.
+currently looking to create a PPP network adapter that allows the serial connection between 3 and zero
+to use IP, this way we should be able to communicate from the dev host to the target host through
+the 3 and the zero. the 10.5 to 10.4 jump will the going over the PPP/serial so it will be slow
+but the transfers and stuff happening over this line will never be more than a backup or something.
+and for those situations an image copy or image mount may be more appropriate anyway.
+the usefulness of doing this is pretty much to be able to run scripts on the target, orchestrated
+from the inspectpi webinterface in a more reliable way than doing it through the serial line
+directly without using PPP. for example here is the naiive approach:
+
+https://gitlab.keyvan.pw/crumple/workbench/blob/master/lib/serial-tty.js
+
+it is clear to see how much extra code had to be written to deal with the error-prone-ness of that approach
+
+in the case of inspectpi, however, we have time to look at better approaches (PPP):
+
+https://en.wikibooks.org/wiki/Serial_Programming/IP_Over_Serial_Connections
+
