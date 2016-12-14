@@ -28,9 +28,11 @@ class Core {
       case 'BURNER_INTERRUPT':
         return sys.burnerInterrupt();
       case 'IMAGE_OPERATION_DUPLICATE':
-        return sys.imageOperationDuplicate(action.img);
+        return sys.imageOperationDuplicate(action.src);
       case 'IMAGE_OPERATION_UNLINK':
         return sys.imageOperationUnlink(action.img);
+      case 'IMAGE_OPERATION_RENAME':
+        return sys.imageOperationRename(action.img, action.name);
       default:
         console.error('Unhandled action', action.type);
     }

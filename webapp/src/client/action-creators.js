@@ -34,12 +34,17 @@ export const burnerInterrupt = () => ({
   type: `BURNER_INTERRUPT`
 })
 
-export const imageOperationDuplicate = (img) => ({
+export const imageOperationDuplicate = (src) => ({
   meta: { remote: true },
-  type: 'IMAGE_OPERATION_DUPLICATE', img
+  type: 'IMAGE_OPERATION_DUPLICATE', src
 })
 
 export const imageOperationUnlink = (img) => ({
   meta: { remote: true },
   type: 'IMAGE_OPERATION_UNLINK', img
+})
+
+export const imageOperationRename = (img, name) => ({
+  meta: { remote: true },
+  type: 'IMAGE_OPERATION_RENAME', img, name
 })

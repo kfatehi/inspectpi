@@ -13,6 +13,7 @@ const Burner = require('../lib/burner');
 const wifi = require('../lib/wifi');
 const fs = require('fs');
 const unlink = Promise.promisify(fs.unlink);
+const rename = Promise.promisify(fs.rename);
 const { loadState, syncState } = require('../lib/persistent-state');
 const { 
   sdCardDevicePath,
@@ -208,6 +209,10 @@ class System extends EventEmitter {
   }
   imageOperationUnlink(img) {
     return unlink(img.path);
+  }
+  imageOperationRename(img, newName) {
+    const newPath = path.join(imagesPath, newName);
+    return rename(img.path, newPath);
   }
 }
 

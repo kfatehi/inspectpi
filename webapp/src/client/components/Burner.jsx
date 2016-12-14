@@ -1,35 +1,5 @@
 import React from 'react';
 
-export const BurnerLoader = ({
-  status: { burning },
-  setInput,
-  setOutput,
-  makeImage,
-  target
-}) => {
-  return <div>
-    { burning ? null : <div>
-      { setInput ? 
-          <button
-            onClick={()=>setInput(target)}>
-            Load in burner as Input
-          </button> : null 
-      }
-      { setOutput ? 
-          <button
-            onClick={()=>setOutput(target)}>
-            Load in burner as Output
-          </button> : null 
-      }
-      { target.type === 'image' ? 
-          <button onClick={()=>confirm('really?') ? unlink(image) : null}>Delete</button>
-          : null
-      }
-      <button onClick={()=>makeImage(target)}>Duplicate</button>
-    </div>}
-  </div>
-}
-
 export const Burner = React.createClass({
   render: function() {
     const {
@@ -65,22 +35,3 @@ export const Burner = React.createClass({
     </div>
   }
 });
-
-export const BurnHistory = ({ burns }) => <div>
-  { burns.length > 0 ? <div>
-    <h1>Burn History</h1>
-    <ul>
-      {burns.map(({
-        timestamp,
-        infile,
-        outfile,
-        success,
-        reason
-      })=><li key={timestamp.toLocaleString()}>
-        {timestamp.toLocaleString()} {infile.name}
-        {outfile.name} {success ? 'OK' : 'FAIL'}
-        { success ? null : <span>reason: {reason}</span> }
-      </li>)}
-    </ul>
-  </div> : null }
-</div>

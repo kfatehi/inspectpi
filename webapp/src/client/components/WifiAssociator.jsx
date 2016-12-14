@@ -1,9 +1,11 @@
 import React from 'react';
 
+import { SimpleInput } from './SimpleInput';
+
 export const WifiAssociator = React.createClass({
   getInitialState: function () {
     const { status: { associating } } = this.props;
-    return { wantPsk: false, psk:null }
+    return { wantPsk: false }
   },
   start: function (security) {
     if ( security === "open" ) {
@@ -20,12 +22,8 @@ export const WifiAssociator = React.createClass({
     this.setState({ wantPsk: false })
     associate(address, ssid, psk);
   },
-  handleChangePsk: function(event) {
-    this.setState({ psk: event.target.value });
-  },
-  handleSubmitPsk: function(event) {
-    this.finish(this.state.psk)
-    event.preventDefault();
+  handleSubmitPsk: function(psk) {
+    this.finish(psk)
   },
   render: function () {
     const { wantPsk } = this.state;
@@ -40,10 +38,11 @@ export const WifiAssociator = React.createClass({
       
     return <div>
       { error ? <p>{error}</p> : null }
-      { wantPsk ? <form onSubmit={this.handleSubmitPsk}>
-        <input autoFocus onChange={this.handleChangePsk} name="psk" placeholder="password" type="text"/>
-        <input type="submit" value="Submit"/>
-      </form> : startButton}
+      { wantPsk ? <SimpleInput
+        name="psk"
+        placeholder="password"
+        handleSubmit={this.handleSubmitPsk}
+      /> : startButton}
     </div>;
   }
 })

@@ -5,7 +5,9 @@ import * as actionCreators from '../action-creators';
 import { Disks } from './Disks';
 import { Images } from './Images';
 import { WifiClient } from './WifiClient';
-import { Burner, BurnerLoader, BurnHistory } from './Burner';
+import { Burner } from './Burner';
+import { BurnerLoader } from './BurnerLoader';
+import { BurnHistory } from './BurnHistory';
 import { PiBootConfigurator } from './PiBootConfigurator';
 
 export const MainPage = connect(state=>state, actionCreators)(({
@@ -24,6 +26,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
   burnerInterrupt,
   imageOperationDuplicate,
   imageOperationUnlink,
+  imageOperationRename,
 })=><div>
   <Disks disks={disks} burnerLoader={
     (disk)=><BurnerLoader
@@ -34,15 +37,17 @@ export const MainPage = connect(state=>state, actionCreators)(({
   />
   <Images
     images={images}
-    unlink={imageOperationUnlink}
     burnerLoader={(img)=><BurnerLoader
       status={burnStatus}
       setInput={burnerSetInput}
       makeImage={imageOperationDuplicate}
+      unlink={imageOperationUnlink}
+      renameImage={imageOperationRename}
       target={img}/>}
   />
   <PiBootConfigurator />
   <Burner status={burnStatus} start={burnerStart} interrupt={burnerInterrupt}/>
+  <BurnHistory burns={burnStatus.history} />
   <WifiClient
     status={wifiClient}
     closeScanner={wifiClientCloseScanner}
