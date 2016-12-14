@@ -1,7 +1,7 @@
 const childProcess = require('child_process');
 const EventEmitter = require('events').EventEmitter;
 const Promise = require('bluebird');
-const es = require('event-stream');
+const ddProgress = require('./dd-progress-stream');
 
 class DD {
   setInfile(infile) {
@@ -26,10 +26,18 @@ class Burner extends EventEmitter {
   dd() {
     return new DD();
   }
-  start(dd) {
+  start(dd, infileSize) {
+    let alive = false;
+    let requestProgress = () => {
+      if (!alive) return;
+      console.log('sent sigusr1');
+      this.proc.kill('SIGUSR1');
+    }
     return new Promise((resolve, reject) => {
       this.proc = dd.spawn();
+      alive = true;
       this.proc.on('exit', (code) => {
+        alive = false;
         clearInterval(this.ivl);
         if (code !== 0) {
           return reject(new Error('dd exited non-zero'));
@@ -37,36 +45,21 @@ class Burner extends EventEmitter {
           return resolve();
         }
       });
-      this.proc.stdout.on('data', function(data) {
-        console.log('stdout', data.toString())
-        this.emit('progress', 0.5);
+      this.proc.stderr.pipe(ddProgress()).on('data', ({
+        fullString,
+        bytesCopied
+      })=>{
+        console.log('>>', fullString, bytesCopied);
+        this.emit('progress', parseFloat(bytesCopied) / infileSize);
+        requestProgress();
       });
-      this.proc.stderr.on('data', function(data) {
-        console.log('stderr', data.toString())
-      });
-      this.ivl = setInterval(() => {
-        this.proc.kill('SIGUSR1');
-      }, 1000)
+      setTimeout(function() {
+        requestProgress();
+      }, 1000);
     });
   }
   interrupt() {
     this.proc.kill('SIGINT');
-  }
-  parse() {
-    const zipUp = ([
-      fullString, bytesCopied, bytesCopiedHumanized, secondsPassed, speed
-    ]) => ({
-      fullString, bytesCopied, bytesCopiedHumanized, secondsPassed, speed
-    })
-      .pipe(es.split())
-      .pipe(es.map(function (line, cb) {
-        var patt = /^(\d+) bytes \((\d+ \w+)\) copied, (.+) \w, (.+ \w+\/s)$/
-        var matches = line.match(patt)
-        return matches ? cb(null, zipUp(matches)) : cb();
-      }))
-      .on('data', function (line) {
-        console.log('>>', line);
-      })
   }
 }
 

@@ -18,7 +18,7 @@ const {
 
 class System extends EventEmitter {
   init() {
-    this.state = INITIAL_STATE;
+    this.state = Object.assign({}, INITIAL_STATE);
     this.watchDisks(()=>this.updateFacts(['disks']));
     this.watchImages(()=>this.updateFacts(['images']));
     this.watchWifiClient = new WirelessEvents();
@@ -107,34 +107,65 @@ class System extends EventEmitter {
   burnerSetInput(infile) {
     const update = (val) => this.setFact('burnStatus', val);
     const getState = () => this.state['burnStatus']
-    const outfile = getState().outfile;
-    update({ burning: false, infile, outfile });
+    const { history, outfile } = getState();
+    update({ history, burning: false, infile, outfile });
   }
   burnerSetOutput(outfile) {
     const update = (val) => this.setFact('burnStatus', val);
     const getState = () => this.state['burnStatus']
-    const infile = getState().infile;
-    update({ burning: false, infile, outfile });
+    const { history, infile } = getState();
+    update({ history, burning: false, infile, outfile });
   }
   burnerStart() {
     const update = (val) => this.setFact('burnStatus', val);
     const getState = () => this.state['burnStatus'];
-    const { infile, outfile } = getState();
-    update({ burning: true, progress: 0, infile, outfile });
+    const { history, infile, outfile } = getState();
+    console.log('HISTORY', history);
+    update({ history, burning: true, progress: 0, infile, outfile });
     this.burner = new Burner();
     const dd = this.burner.dd();
     dd.setInfile(infile.path);
     dd.setOutfile(outfile.path);
     dd.setBlockSize('8M');
-    this.burner.start(dd).then(() => {
-      update(INITIAL_STATE.burnStatus);
+    console.log('removing device from watchlist prior to burn');
+    this.sdWatcher.unwatch(outfile.path);
+    this.burner.start(dd, infile.size).then(() => {
+      console.log('!!0', 'dd finished!');
+      update(Object.assign({}, {
+        burning: false, infile, outfile
+      },{
+        history: [
+          {
+            timestamp: new Date(),
+            infile, outfile,
+            success: true
+          },
+          ...history,
+        ]
+      }));
     }).catch((err) => {
-      update({ burning: false, infile, outfile, error: err.message })
-      console.error('dd error', err);
-    })
+      console.error('!!1', 'dd error', err);
+      update(Object.assign({}, {
+        burning: false, infile, outfile
+      }, {
+        history: [
+          {
+            timestamp: new Date(),
+            infile, outfile,
+            reason: err.stack,
+            success: false
+          },
+          ...history,
+        ]
+      }));
+
+    }).finally(()=> {
+      console.log('burning is over, add device back to watchlist');
+      this.sdWatcher.add(outfile.path);
+    });
     this.burner.on('progress', (progress) => {
       console.log('burner progress');
-      update({ burning: true, progress, infile, outfile })
+      update({ history, burning: true, progress, infile, outfile })
     })
   }
   burnerInterrupt() {

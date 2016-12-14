@@ -44,10 +44,16 @@ module.exports = {
     //[bssid]: { associating: true, error: null|"" }
   },
   burnStatus: {
+    history: [
+      //timestamp: Date,
+      //infile: { ...(disk|image) },
+      //outfile: { ...(disk|image) },
+      //success: bool
+      //reason: ""
+    ],
     burning: false,
     //infile: { ...(disk|image) },
     //outfile: { ...(disk|image) },
     //progress: 0.5
-    //error: null|""
   }
 };

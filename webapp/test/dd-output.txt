@@ -6,15 +6,5 @@
 15+0 records out
 125829120 bytes (126 MB) copied, 1.56449 s, 80.4 MB/s
 
-15+0 records in
-15+0 records out
-125829120 bytes (126 MB) copied, 1.56449 s, 80.4 MB/s
-
-15+0 records in
-15+0 records out
-125829120 bytes (126 MB) copied, 1.56449 s, 80.4 MB/s
-
-15+0 records in
-15+0 records out
-125829120 bytes (126 MB) copied, 1.56449 s, 80.4 MB/s
+0 bytes (0 B) copied, 0.00905874 s, 0.0 kB/s
 
