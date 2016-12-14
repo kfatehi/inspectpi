@@ -1,8 +1,15 @@
 import React from 'react';
 
-export default React.createClass({
+const Component = React.createClass({
   render: function () {
     return <div>Hello</div>;
   }
 })
 
+function mapStateToProps(state) {
+  return {
+    loginError: state.sdcard
+  }
+}
+
+export const LoginPage = connect(mapStateToProps, actionCreators)(Component);

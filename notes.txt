@@ -34,3 +34,16 @@ up iptables-restore < /etc/iptables.ipv4.nat
 
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get install nodejs
+
+# lets say i wanna run something in the background via /etc/rc.local quickly
+# tmux is useful for doing this when im in dev mode too. e.g.: 
+#
+# tmux new -d -s my-session 'watch date'
+#
+# great for running a bunch of things in panes too, e.g.:
+# tmux new -d -s my-session 'echo window-1 pane-1; sleep 8' \; \
+#           split-window -d 'echo window-1 pane-2; sleep 6' \; down-pane \; \
+#             new-window -d 'echo window-2;        sleep 4' \; next-window \; \
+#                 attach \;
+#
+# source: http://unix.stackexchange.com/questions/22682/how-to-launch-a-set-of-program-inside-tmux-or-gnome-terminal-within-a-script

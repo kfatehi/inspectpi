@@ -13,9 +13,7 @@ import './styles/index.less';
 
 const socket = io();
 
-const reducer = combineReducers({
-  app: appReducer,
-});
+const reducer = appReducer;
 
 const remoteActionMiddleware = socket => store => next => action => {
   if (action.meta && action.meta.remote) {
