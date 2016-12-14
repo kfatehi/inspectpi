@@ -14,8 +14,12 @@
  * full application schema.
  */
 module.exports = {
-  disks: [],
-  images: [],
+  disks: [
+    // { name, size:bytes, type:disk, path } 
+  ],
+  images: [
+    // { name, size:bytes, type:image, path } 
+  ],
   wifiClient: {
     ssid: null,
     unassociated: true,
@@ -23,14 +27,26 @@ module.exports = {
   },
   wifiClientScanStatus: {
     scanning: false,
-    baseStations: []
+    baseStations: [
+      // {
+      //   address: '00:0b:81:ab:14:22',
+      //   ssid: 'BlueberryPi',
+      //   mode: 'master',
+      //   frequency: 2.437,
+      //   channel: 6,
+      //   security: 'wpa',
+      //   quality: 48,
+      //   signal: 87
+      // }
+    ]
   },
   wifiClientAssocStatus: {
     //[bssid]: { associating: true, error: null }
   },
   burnStatus: {
-    burning: true,
-    pairKey: '2016-11-25-raspbian-jessie-lite.img->sda',
-    progress: 0.5
+    burning: false,
+    //infile: { ...(disk|image) },
+    //outfile: { ...(disk|image) },
+    //progress: 0.5
   }
 };

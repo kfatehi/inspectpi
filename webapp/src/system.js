@@ -66,14 +66,17 @@ class System extends EventEmitter {
       return disks.filter(({name, type})=>
         name.match(/^sda\d?/) && type === "disk"
       )
-    })
+    }).map(({name, size, type}) => ({
+      name, size, type, path: '/dev/'+name
+    }))
   }
   getImages() {
-    return readdir(imagesPath).map((name) =>
-      stat(path.join(imagesPath, name)).then(({size}) => ({
-        name, size
+    return readdir(imagesPath).map((name) => {
+      const fullpath = path.join(imagesPath, name);
+      return stat(fullpath).then(({size}) => ({
+        name, size, type: 'image', path: fullpath
       }))
-    )
+    })
   }
   getWifiClientStatus() {
     return wifi.getStatus('wlan1');
@@ -99,6 +102,22 @@ class System extends EventEmitter {
   wifiClientScanEnd() {
     const update = (val) => this.setFact('wifiClientScanStatus', val);
     update({ scanning: false, baseStations: [] });
+  }
+  burnerSetInput(infile) {
+    const update = (val) => this.setFact('burnStatus', val);
+    const getState = () => this.state['burnStatus']
+    const outfile = getState().outfile;
+    update({ burning: false, infile, outfile });
+  }
+  burnerSetOutput(outfile) {
+    const update = (val) => this.setFact('burnStatus', val);
+    const getState = () => this.state['burnStatus']
+    const infile = getState().infile;
+    update({ burning: false, infile, outfile });
+  }
+  burnerStart() {
+  }
+  burnerInterrupt() {
   }
 }
 

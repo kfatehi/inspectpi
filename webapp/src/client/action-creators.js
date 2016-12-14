@@ -14,8 +14,23 @@ export const wifiClientCloseScanner = () => ({
   type: 'WIFI_CLIENT_SCAN_END'
 })
 
-export const burnImageToDisk = (imageName, diskName) => ({
+export const burnerSetInput = value => ({
   meta: { remote: true },
-  type: 'BURN_IMAGE_TO_DISK',
-  imageName, diskName
+  type: `BURNER_SET_INPUT`, value
 })
+
+export const burnerSetOutput = value => ({
+  meta: { remote: true },
+  type: `BURNER_SET_OUTPUT`, value
+})
+
+export const burnerStart = () => ({
+  meta: { remote: true },
+  type: `BURNER_START`
+})
+
+export const burnerInterrupt = () => ({
+  meta: { remote: true },
+  type: `BURNER_INTERRUPT`
+})
+

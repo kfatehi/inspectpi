@@ -11,11 +11,24 @@ class Core {
     ).then(()=>this)
   }
   handleAction (action) {
+    const sys = this.system;
     switch (action.type) {
-      case 'WIFI_CLIENT_SCAN': return this.system.wifiClientScan();
-      case 'WIFI_CLIENT_SCAN_END': return this.system.wifiClientScanEnd();
-      case 'WIFI_CLIENT_ASSOC': return this.system.wifiClientAssoc(action);
-      default: throw new Error('dont know how to handle action '+action.type);
+      case 'WIFI_CLIENT_SCAN':
+        return sys.wifiClientScan();
+      case 'WIFI_CLIENT_SCAN_END':
+        return sys.wifiClientScanEnd();
+      case 'WIFI_CLIENT_ASSOC':
+        return sys.wifiClientAssoc(action);
+      case 'BURNER_SET_INPUT':
+        return sys.burnerSetInput(action.value);
+      case 'BURNER_SET_OUTPUT':
+        return sys.burnerSetOutput(action.value);
+      case 'BURNER_START':
+        return sys.burnerStart();
+      case 'BURNER_INTERRUPT':
+        return sys.burnerInterrupt();
+      default:
+        console.error('Unhandled action', action.type);
     }
   }
   acceptSocket (socket) {
