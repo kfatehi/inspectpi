@@ -12,21 +12,21 @@ export const SimplePrompt = React.createClass({
       startLabel,
       name,
       placeholder,
+      initialValue,
       handleSubmit
     } = this.props;
     if ( showInput ) {
       return <span>
         <SimpleInput
           name={name}
+          initialValue={initialValue}
           placeholder={placeholder}
           handleSubmit={(val)=>{
             handleSubmit(val)
             this.setState({showInput: false});
           }}
+          handleCancel={()=>this.setState({showInput: false})}
         />
-        <button onClick={()=>this.setState({showInput: false})}>
-          Cancel
-        </button>
       </span>
     } else {
       return <button onClick={()=>this.setState({showInput: true})}>

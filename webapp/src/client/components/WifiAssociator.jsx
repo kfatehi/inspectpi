@@ -39,8 +39,8 @@ export const WifiAssociator = React.createClass({
     return <div>
       { error ? <p>{error}</p> : null }
       { wantPsk ? <SimpleInput
-        name="psk"
         placeholder="password"
+        type="password"
         handleSubmit={this.handleSubmitPsk}
       /> : startButton}
     </div>;

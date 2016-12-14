@@ -2,7 +2,7 @@ import React from 'react';
 
 import { SimplePrompt } from './SimplePrompt';
 
-export const BurnerLoader = ({
+export const Operations = ({
   status: { burning },
   setInput,
   setOutput,
@@ -34,8 +34,7 @@ export const BurnerLoader = ({
       </button>
       { renameImage ? <SimplePrompt
         startLabel={"Rename"}
-        name="name"
-        placeholder="something.img"
+        initialValue={target.name}
         handleSubmit={(newName) => renameImage(target, newName)}
       /> : null }
     </div>}
