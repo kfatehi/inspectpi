@@ -10,6 +10,9 @@ module.exports = {
       'react-dom',
       'react-redux',
       "react-router",
+      "socket.io-client",
+      "pretty-bytes",
+      "bluebird"
     ],
     main: `${__dirname}/src/client/index.jsx`,
   },

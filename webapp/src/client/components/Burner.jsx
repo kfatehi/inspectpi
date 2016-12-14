@@ -38,35 +38,31 @@ export const Burner = React.createClass({
       interrupt
     } = this.props;
 
-    const burnPair = <div>
+    const activator = () => <span>
+      { infile && outfile ? <div>
+        { infile.size > outfile.size ? <span>
+          infile too big for outfile
+          </span> : <span>
+          <button onClick={()=>start()}>Start burn</button>
+        </span> }
+      </div> : null }
+    </span>;
+
+    return <div>
+      <h1>Burner</h1>
       <p>infile {infile ? infile.name : 'none'}</p>
       <p>outfile {outfile ? outfile.name : 'none'}</p>
-    </div>
-
-    if (burning) {
-      return <div>
-        {burnPair}
+      { burning ? <span>
         <span>burn progress: {progress}</span>
         <button onClick={()=>interrupt()}>Interrupt burn</button>
-      </div>
-    } else {
-      return <div>
-        {burnPair}
-        { infile && outfile ? <div>
-          { infile.size > outfile.size ? <span>
-            infile too big for outfile
-            </span> : <span>
-            <button onClick={()=>start()}>Start burn</button>
-          </span> }
-        </div> : null }
-      </div>
-    }
+      </span> : activator() }
+    </div>
   }
 });
 
 export const BurnHistory = ({ burns }) => <div>
   { burns.length > 0 ? <div>
-    <h1>Previous Burns</h1>
+    <h1>Burn History</h1>
     <ul>
       {burns.map(({
         timestamp,

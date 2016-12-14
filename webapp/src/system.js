@@ -70,7 +70,7 @@ class System extends EventEmitter {
     return lsblk(['name', 'size', 'type', 'mountpoint']).then((disks) => {
       // we are only interested in /dev/sda
       return disks.filter(({name, type})=>
-        name.match(/^sda\d?/) && type === "disk"
+        name.match(/^sda\d?/)
       )
     }).map(({name, size, type}) => ({
       name, size, type, path: '/dev/'+name

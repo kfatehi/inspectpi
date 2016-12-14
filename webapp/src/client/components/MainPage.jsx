@@ -6,6 +6,7 @@ import { Disks } from './Disks';
 import { Images } from './Images';
 import { WifiClient } from './WifiClient';
 import { Burner, BurnerLoader, BurnHistory } from './Burner';
+import { PiBootConfigurator } from './PiBootConfigurator';
 
 export const MainPage = connect(state=>state, actionCreators)(({
   disks,
@@ -34,8 +35,8 @@ export const MainPage = connect(state=>state, actionCreators)(({
       setInput={burnerSetInput}
       target={img}/>}
   />
+  <PiBootConfigurator />
   <Burner status={burnStatus} start={burnerStart} interrupt={burnerInterrupt}/>
-  <BurnHistory burns={burnStatus.history}/>
   <WifiClient
     status={wifiClient}
     closeScanner={wifiClientCloseScanner}
