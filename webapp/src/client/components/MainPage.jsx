@@ -23,19 +23,22 @@ export const MainPage = connect(state=>state, actionCreators)(({
   burnerStart,
   burnerInterrupt,
   imageOperationDuplicate,
+  imageOperationUnlink,
 })=><div>
   <Disks disks={disks} burnerLoader={
     (disk)=><BurnerLoader
       status={burnStatus}
       setOutput={burnerSetOutput}
+      makeImage={imageOperationDuplicate}
       target={disk}/>}
   />
   <Images
     images={images}
-    duplicate={imageOperationDuplicate}
+    unlink={imageOperationUnlink}
     burnerLoader={(img)=><BurnerLoader
       status={burnStatus}
       setInput={burnerSetInput}
+      makeImage={imageOperationDuplicate}
       target={img}/>}
   />
   <PiBootConfigurator />

@@ -11,6 +11,8 @@ const watchOpts = {ignoreInitial: true};
 const WirelessEvents = require('../lib/wireless-events');
 const Burner = require('../lib/burner');
 const wifi = require('../lib/wifi');
+const fs = require('fs');
+const unlink = Promise.promisify(fs.unlink);
 const { loadState, syncState } = require('../lib/persistent-state');
 const { 
   sdCardDevicePath,
@@ -121,7 +123,13 @@ class System extends EventEmitter {
     const { history, infile } = getState();
     update({ history, burning: false, infile, outfile });
   }
-  burnerStart() {
+  /**
+   * options:
+   * - watcher
+   * - blockSize
+   */
+  burnerStart(options={}) {
+    const watcher = options.outputWatcher || this.sdWatcher;
     const update = (val) => this.setFact('burnStatus', val);
     const getState = () => this.state['burnStatus'];
     const { history, infile, outfile } = getState();
@@ -130,10 +138,15 @@ class System extends EventEmitter {
     const dd = Burner.dd();
     dd.setInfile(infile.path);
     dd.setOutfile(outfile.path);
+    dd.setBlockSize(options.blockSize || '1M');
     console.log('removing device from watchlist prior to burn');
-    this.sdWatcher.unwatch(outfile.path);
+    watcher.unwatch(outfile.path);
     this.burner = new Burner();
-    this.burner.start(dd, infile.size).then(() => {
+    this.burner.on('progress', (progress) => {
+      console.log('burner progress');
+      update({ history, burning: true, progress, infile, outfile })
+    })
+    return this.burner.start(dd, infile.size).then(() => {
       console.log('!!0', 'dd finished!');
       update(Object.assign({}, {
         burning: false, infile, outfile
@@ -162,45 +175,39 @@ class System extends EventEmitter {
           ...history,
         ]
       }));
-
     }).finally(()=> {
       console.log('burning is over, add device back to watchlist');
-      this.sdWatcher.add(outfile.path);
+      watcher.add(outfile.path);
     });
-    this.burner.on('progress', (progress) => {
-      console.log('burner progress');
-      update({ history, burning: true, progress, infile, outfile })
-    })
   }
   burnerInterrupt() {
     this.burner.interrupt()
   }
-  imageOperationDuplicate(img) {
-    const imagePath = img.path;
-    const imageSize = img.size;
+  imageOperationDuplicate(src) {
+    //const path = require('path');
+    //const src = { name: 'sda1', path:'/dev/sda1'}
     const now = new Date().getTime();
-    const ext = path.extname(imagePath)
+    const ext = path.extname(src.path)
     const tailPattern = RegExp(`${ext}$`);
-    const dupeTail = `-${now}${ext}`
-    const dupePath = imagePath.replace(tailPattern, dupeTail)
-    const burner = new Burner();
-    const dd = Burner.dd();
-    dd.setInfile(imagePath);
-    dd.setOutfile(dupePath);
-    dd.setBlockSize('50M');
-    this.imgWatcher.unwatch(dupePath)
-    burner.start(dd, imageSize).then(() => {
-      console.log('copy complete');
-    }).catch(err=>{
-      console.error('copy failed', err);
+    const dupeTail = `-${now}.img`;
+    const destName = src.name.replace(tailPattern, dupeTail);
+    const destPath = path.join(imagesPath, destName);
+    this.burnerSetInput(src);
+    this.burnerSetOutput({
+      size: src.size,
+      name: destName,
+      path: destPath,
+      type: 'image'
+    });
+    return this.burnerStart({
+      outputWatcher: this.imgWatcher,
+      blockSize: '4M'
     }).finally(()=>{
-      console.log('rewatching');
-      this.imgWatcher.add(dupePath)
       this.updateFacts(['images'])
     })
-    burner.on('progress', progress => {
-      console.log('copy progress', progress);
-    })
+  }
+  imageOperationUnlink(img) {
+    return unlink(img.path);
   }
 }
 

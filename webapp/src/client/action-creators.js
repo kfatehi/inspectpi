@@ -38,3 +38,8 @@ export const imageOperationDuplicate = (img) => ({
   meta: { remote: true },
   type: 'IMAGE_OPERATION_DUPLICATE', img
 })
+
+export const imageOperationUnlink = (img) => ({
+  meta: { remote: true },
+  type: 'IMAGE_OPERATION_UNLINK', img
+})

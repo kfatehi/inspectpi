@@ -4,6 +4,7 @@ export const BurnerLoader = ({
   status: { burning },
   setInput,
   setOutput,
+  makeImage,
   target
 }) => {
   return <div>
@@ -20,6 +21,11 @@ export const BurnerLoader = ({
             Load in burner as Output
           </button> : null 
       }
+      { target.type === 'image' ? 
+          <button onClick={()=>confirm('really?') ? unlink(image) : null}>Delete</button>
+          : null
+      }
+      <button onClick={()=>makeImage(target)}>Duplicate</button>
     </div>}
   </div>
 }
