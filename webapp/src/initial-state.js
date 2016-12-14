@@ -41,12 +41,13 @@ module.exports = {
     ]
   },
   wifiClientAssocStatus: {
-    //[bssid]: { associating: true, error: null }
+    //[bssid]: { associating: true, error: null|"" }
   },
   burnStatus: {
     burning: false,
     //infile: { ...(disk|image) },
     //outfile: { ...(disk|image) },
     //progress: 0.5
+    //error: null|""
   }
 };

@@ -21,6 +21,7 @@
     "concat-stream": "^1.5.2",
     "css-loader": "^0.26.1",
     "debounce": "^1.0.0",
+    "event-stream": "^3.3.4",
     "express": "^4.14.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
@@ -33,6 +34,7 @@
     "redux": "^3.6.0",
     "socket.io": "^1.7.2",
     "socket.io-client": "^1.7.2",
+    "stream-combiner": "^0.2.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0",
     "wireless-tools": "^0.18.1"

@@ -9,6 +9,7 @@ const lsblk = require('../lib/lsblk');
 const INITIAL_STATE = require('./initial-state');
 const watchOpts = {ignoreInitial: true};
 const WirelessEvents = require('../lib/wireless-events');
+const Burner = require('../lib/burner');
 const wifi = require('../lib/wifi');
 const { 
   sdCardDevicePath,
@@ -116,8 +117,28 @@ class System extends EventEmitter {
     update({ burning: false, infile, outfile });
   }
   burnerStart() {
+    const update = (val) => this.setFact('burnStatus', val);
+    const getState = () => this.state['burnStatus'];
+    const { infile, outfile } = getState();
+    update({ burning: true, progress: 0, infile, outfile });
+    this.burner = new Burner();
+    const dd = this.burner.dd();
+    dd.setInfile(infile.path);
+    dd.setOutfile(outfile.path);
+    dd.setBlockSize('8M');
+    this.burner.start(dd).then(() => {
+      update(INITIAL_STATE.burnStatus);
+    }).catch((err) => {
+      update({ burning: false, infile, outfile, error: err.message })
+      console.error('dd error', err);
+    })
+    this.burner.on('progress', (progress) => {
+      console.log('burner progress');
+      update({ burning: true, progress, infile, outfile })
+    })
   }
   burnerInterrupt() {
+    this.burner.interrupt()
   }
 }
 
