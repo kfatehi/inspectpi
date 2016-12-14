@@ -22,6 +22,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
   burnerSetOutput,
   burnerStart,
   burnerInterrupt,
+  imageOperationDuplicate,
 })=><div>
   <Disks disks={disks} burnerLoader={
     (disk)=><BurnerLoader
@@ -29,8 +30,10 @@ export const MainPage = connect(state=>state, actionCreators)(({
       setOutput={burnerSetOutput}
       target={disk}/>}
   />
-  <Images images={images} burnerLoader={
-    (img)=><BurnerLoader
+  <Images
+    images={images}
+    duplicate={imageOperationDuplicate}
+    burnerLoader={(img)=><BurnerLoader
       status={burnStatus}
       setInput={burnerSetInput}
       target={img}/>}

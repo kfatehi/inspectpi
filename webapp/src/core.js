@@ -27,6 +27,8 @@ class Core {
         return sys.burnerStart();
       case 'BURNER_INTERRUPT':
         return sys.burnerInterrupt();
+      case 'IMAGE_OPERATION_DUPLICATE':
+        return sys.imageOperationDuplicate(action.img);
       default:
         console.error('Unhandled action', action.type);
     }

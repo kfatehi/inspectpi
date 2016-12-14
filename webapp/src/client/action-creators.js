@@ -34,3 +34,7 @@ export const burnerInterrupt = () => ({
   type: `BURNER_INTERRUPT`
 })
 
+export const imageOperationDuplicate = (img) => ({
+  meta: { remote: true },
+  type: 'IMAGE_OPERATION_DUPLICATE', img
+})

@@ -13,17 +13,22 @@ class DD {
   setBlockSize(blockSize) {
     this.blockSize = blockSize;
   }
-  spawn() {
-    return childProcess.spawn('dd', [
+  getArgs(){
+    return [
       `if=${this.infile}`,
       `of=${this.outfile}`,
-      `bs=${this.blockSize}`
-    ]);
+      `bs=${this.blockSize || '1M'}`
+    ]
+  }
+  spawn() {
+    const args = this.getArgs();
+    console.log('spawn: dd '+args.join(' '));
+    return childProcess.spawn('dd', args);
   }
 }
 
 class Burner extends EventEmitter {
-  dd() {
+  static dd() {
     return new DD();
   }
   start(dd, infileSize) {

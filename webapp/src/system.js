@@ -127,13 +127,12 @@ class System extends EventEmitter {
     const { history, infile, outfile } = getState();
     console.log('HISTORY', history);
     update({ history, burning: true, progress: 0, infile, outfile });
-    this.burner = new Burner();
-    const dd = this.burner.dd();
+    const dd = Burner.dd();
     dd.setInfile(infile.path);
     dd.setOutfile(outfile.path);
-    dd.setBlockSize('1M');
     console.log('removing device from watchlist prior to burn');
     this.sdWatcher.unwatch(outfile.path);
+    this.burner = new Burner();
     this.burner.start(dd, infile.size).then(() => {
       console.log('!!0', 'dd finished!');
       update(Object.assign({}, {
@@ -175,6 +174,33 @@ class System extends EventEmitter {
   }
   burnerInterrupt() {
     this.burner.interrupt()
+  }
+  imageOperationDuplicate(img) {
+    const imagePath = img.path;
+    const imageSize = img.size;
+    const now = new Date().getTime();
+    const ext = path.extname(imagePath)
+    const tailPattern = RegExp(`${ext}$`);
+    const dupeTail = `-${now}${ext}`
+    const dupePath = imagePath.replace(tailPattern, dupeTail)
+    const burner = new Burner();
+    const dd = Burner.dd();
+    dd.setInfile(imagePath);
+    dd.setOutfile(dupePath);
+    dd.setBlockSize('50M');
+    this.imgWatcher.unwatch(dupePath)
+    burner.start(dd, imageSize).then(() => {
+      console.log('copy complete');
+    }).catch(err=>{
+      console.error('copy failed', err);
+    }).finally(()=>{
+      console.log('rewatching');
+      this.imgWatcher.add(dupePath)
+      this.updateFacts(['images'])
+    })
+    burner.on('progress', progress => {
+      console.log('copy progress', progress);
+    })
   }
 }
 
