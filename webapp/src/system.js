@@ -11,14 +11,15 @@ const watchOpts = {ignoreInitial: true};
 const WirelessEvents = require('../lib/wireless-events');
 const Burner = require('../lib/burner');
 const wifi = require('../lib/wifi');
+const { loadState, syncState } = require('../lib/persistent-state');
 const { 
   sdCardDevicePath,
-  imagesPath
+  imagesPath,
+  stateFile
 } = require('../config.js');
 
 class System extends EventEmitter {
   init() {
-    this.state = Object.assign({}, INITIAL_STATE);
     this.watchDisks(()=>this.updateFacts(['disks']));
     this.watchImages(()=>this.updateFacts(['images']));
     this.watchWifiClient = new WirelessEvents();
@@ -27,9 +28,12 @@ class System extends EventEmitter {
       this.updateFacts([ 'wifiClient' ])
     });
     this.watchWifiClient.start();
-    return this.updateFacts([
-      'disks', 'images', 'wifiClient'
-    ]);
+    return loadState(stateFile, INITIAL_STATE).then(state => {
+      this.state = state;
+      return this.updateFacts([
+        'disks', 'images', 'wifiClient'
+      ]);
+    })
   }
   watchDisks(reaction) {
     this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
@@ -47,6 +51,7 @@ class System extends EventEmitter {
     console.log('set fact', name);
     this.state[name] = val;
     this.emit('change');
+    syncState(stateFile, this.state);
   }
   updateFacts(list) {
     return Promise.mapSeries(list, (factName) => {
