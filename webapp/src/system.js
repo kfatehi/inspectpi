@@ -131,7 +131,7 @@ class System extends EventEmitter {
     const dd = this.burner.dd();
     dd.setInfile(infile.path);
     dd.setOutfile(outfile.path);
-    dd.setBlockSize('8M');
+    dd.setBlockSize('1M');
     console.log('removing device from watchlist prior to burn');
     this.sdWatcher.unwatch(outfile.path);
     this.burner.start(dd, infile.size).then(() => {

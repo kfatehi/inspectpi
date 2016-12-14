@@ -27,18 +27,18 @@ class Burner extends EventEmitter {
     return new DD();
   }
   start(dd, infileSize) {
+    const PROGRESS_EVERY = 5000;
     let alive = false;
     let requestProgress = () => {
       if (!alive) return;
-      console.log('sent sigusr1');
       this.proc.kill('SIGUSR1');
+      console.log('sent sigusr1');
     }
     return new Promise((resolve, reject) => {
       this.proc = dd.spawn();
       alive = true;
       this.proc.on('exit', (code) => {
         alive = false;
-        clearInterval(this.ivl);
         if (code !== 0) {
           return reject(new Error('dd exited non-zero'));
         } else {
@@ -51,11 +51,9 @@ class Burner extends EventEmitter {
       })=>{
         console.log('>>', fullString, bytesCopied);
         this.emit('progress', parseFloat(bytesCopied) / infileSize);
-        requestProgress();
+        setTimeout(requestProgress, PROGRESS_EVERY);
       });
-      setTimeout(function() {
-        requestProgress();
-      }, 1000);
+      setTimeout(requestProgress, PROGRESS_EVERY);
     });
   }
   interrupt() {

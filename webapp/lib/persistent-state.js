@@ -12,7 +12,7 @@ const writeFile = debounce(function(filePath, data) {
     else
       console.log('synced state to disk');
   })
-}, 1000);
+}, 5000);
 
 module.exports = {
   loadState: (filePath, defaultObject) => {

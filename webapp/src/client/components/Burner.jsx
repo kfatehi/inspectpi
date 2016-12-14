@@ -38,15 +38,20 @@ export const Burner = React.createClass({
       interrupt
     } = this.props;
 
+    const burnPair = <div>
+      <p>infile {infile ? infile.name : 'none'}</p>
+      <p>outfile {outfile ? outfile.name : 'none'}</p>
+    </div>
+
     if (burning) {
       return <div>
+        {burnPair}
         <span>burn progress: {progress}</span>
         <button onClick={()=>interrupt()}>Interrupt burn</button>
       </div>
     } else {
       return <div>
-        <p>infile {infile ? infile.name : 'none'}</p>
-        <p>outfile {outfile ? outfile.name : 'none'}</p>
+        {burnPair}
         { infile && outfile ? <div>
           { infile.size > outfile.size ? <span>
             infile too big for outfile
