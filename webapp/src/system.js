@@ -134,20 +134,7 @@ class System extends EventEmitter {
     const update = (val) => this.setFact('burnStatus', val);
     const getState = () => this.state['burnStatus'];
     const { history, infile, outfile } = getState();
-    console.log('HISTORY', history);
-    update({ history, burning: true, progress: 0, infile, outfile });
     const dd = Burner.dd();
-    dd.set('if', infile.path);
-    dd.set('of', outfile.path);
-    dd.set('bs', options.blockSize || '1M');
-    dd.set('statusinterval', 1);
-    console.log('removing device from watchlist prior to burn');
-    watcher.unwatch(outfile.path);
-    this.burner = new Burner();
-    this.burner.on('progress', (progress) => {
-      console.log('burner progress');
-      update({ history, burning: true, progress, infile, outfile })
-    })
     const finish = (historyEntry) => {
       update(Object.assign({}, {
         burning: false, infile, outfile
@@ -161,12 +148,21 @@ class System extends EventEmitter {
         ]
       }));
     }
+    update({ history, burning: true, progress: 0, infile, outfile });
+    dd.set('if', infile.path);
+    dd.set('of', outfile.path);
+    dd.set('bs', options.blockSize || '1M');
+    dd.set('statusinterval', 1);
+    watcher.unwatch(outfile.path);
+    this.burner = new Burner();
+    this.burner.on('progress', (progress) => {
+      update({ history, burning: true, progress, infile, outfile })
+    })
     return this.burner.start(dd, infile.size).then(() => {
       finish({ success: true })
     }).catch((err) => {
       finish({ success: false, reason: err.stack });
     }).finally(()=> {
-      console.log('burning is over, add device back to watchlist');
       watcher.add(outfile.path);
     });
   }
