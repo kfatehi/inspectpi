@@ -148,35 +148,23 @@ class System extends EventEmitter {
       console.log('burner progress');
       update({ history, burning: true, progress, infile, outfile })
     })
-    return this.burner.start(dd, infile.size).then(() => {
-      console.log('!!0', 'dd finished!');
+    const finish = (historyEntry) => {
       update(Object.assign({}, {
         burning: false, infile, outfile
       },{
         history: [
-          {
+          Object.assign({}, {
             timestamp: new Date(),
-            infile, outfile,
-            success: true
-          },
+            infile, outfile
+          }, historyEntry),
           ...history,
         ]
       }));
+    }
+    return this.burner.start(dd, infile.size).then(() => {
+      finish({ success: true })
     }).catch((err) => {
-      console.error('!!1', 'dd error', err);
-      update(Object.assign({}, {
-        burning: false, infile, outfile
-      }, {
-        history: [
-          {
-            timestamp: new Date(),
-            infile, outfile,
-            reason: err.stack,
-            success: false
-          },
-          ...history,
-        ]
-      }));
+      finish({ success: false, reason: err.stack });
     }).finally(()=> {
       console.log('burning is over, add device back to watchlist');
       watcher.add(outfile.path);
