@@ -8,7 +8,7 @@ import { WifiClient } from './WifiClient';
 import { Burner } from './Burner';
 import { Operations } from './Operations';
 import { BurnHistory } from './BurnHistory';
-import { PiBootConfigurator } from './PiBootConfigurator';
+import { Mounter } from './Mounter';
 
 export const MainPage = connect(state=>state, actionCreators)(({
   disks,
@@ -47,7 +47,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
       makeImage={imageOperationDuplicate}
       target={disk}/>}
   />
-  <PiBootConfigurator
+  <Mounter
     disks={disks}
     status={mounterStatus}
     mountDisk={mounterOperationMountDisk}

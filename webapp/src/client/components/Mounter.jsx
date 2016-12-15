@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const PiBootConfigurator = React.createClass({
+export const Mounter = React.createClass({
   render: function() {
     const {
       status: { 
@@ -25,12 +25,14 @@ export const PiBootConfigurator = React.createClass({
     </div>;
 
     const unmountedView = () => <div>
-      <pre>{JSON.stringify(disks, null, 4)}</pre>
-      { disks ? btnMount() : "No SD card inserted" }
+      { disks.length > 0 ? <div>
+        <pre>{JSON.stringify(disks, null, 4)}</pre>
+        btnMount()
+      </div>: "No SD card inserted" }
     </div>
 
     return <div>
-      <h1>Pi Boot Configurator</h1>
+      <h1>Mounter</h1>
       { mounted ? mountedView() : unmountedView() }
     </div>;
   }
