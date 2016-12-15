@@ -14,7 +14,6 @@ const wifi = require('../lib/wifi');
 const fs = require('fs');
 const unlink = Promise.promisify(fs.unlink);
 const rename = Promise.promisify(fs.rename);
-const { loadState, syncState } = require('../lib/persistent-state');
 const { 
   sdCardDevicePath,
   imagesPath,
@@ -31,12 +30,10 @@ class System extends EventEmitter {
       this.updateFacts([ 'wifiClient' ])
     });
     this.watchWifiClient.start();
-    return loadState(stateFile, INITIAL_STATE).then(state => {
-      this.state = state;
-      return this.updateFacts([
-        'disks', 'images', 'wifiClient'
-      ]);
-    })
+    this.state = Object.assign({}, INITIAL_STATE);
+    return this.updateFacts([
+      'disks', 'images', 'wifiClient'
+    ]);
   }
   watchDisks(reaction) {
     this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
@@ -54,7 +51,6 @@ class System extends EventEmitter {
     console.log('set fact', name);
     this.state[name] = val;
     this.emit('change');
-    syncState(stateFile, this.state);
   }
   updateFacts(list) {
     return Promise.mapSeries(list, (factName) => {
