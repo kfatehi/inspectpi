@@ -15,6 +15,7 @@ const fs = require('fs');
 const unlink = Promise.promisify(fs.unlink);
 const rename = Promise.promisify(fs.rename);
 const progressStream = require('progress-stream');
+const fileType = require('file-type');
 const { 
   sdCardDevicePath,
   imagesPath,
@@ -79,8 +80,10 @@ class System extends EventEmitter {
   getImages() {
     return readdir(imagesPath).map((name) => {
       const fullpath = path.join(imagesPath, name);
+      //return getFileType(fullpath).then(type
       return stat(fullpath).then(({size}) => ({
-        name, size, type: 'image', path: fullpath
+        name, size, type: 'image' , path: fullpath,
+        //        compressed: 
       }))
     })
   }

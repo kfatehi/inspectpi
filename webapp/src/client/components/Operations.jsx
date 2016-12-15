@@ -13,7 +13,7 @@ export const Operations = ({
 }) => {
   return <div>
     { burning ? null : <div>
-      { setInput ? 
+      { setInput  ? 
           <button
             onClick={()=>setInput(target)}>
             Load in burner as Input

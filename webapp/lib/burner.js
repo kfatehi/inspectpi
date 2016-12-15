@@ -1,37 +1,11 @@
-const childProcess = require('child_process');
 const EventEmitter = require('events').EventEmitter;
 const Promise = require('bluebird');
 const ddProgress = require('./dd-progress-stream');
-
-class DD {
-  setInfile(infile) {
-    this.infile = infile;
-  }
-  setOutfile(outfile) {
-    this.outfile = outfile;
-  }
-  setBlockSize(blockSize) {
-    this.blockSize = blockSize;
-  }
-  getArgs(){
-    return [
-      `if=${this.infile}`,
-      `of=${this.outfile}`,
-      `bs=${this.blockSize || '1M'}`,
-      // statusinterval=10
-
-    ]
-  }
-  spawn() {
-    const args = this.getArgs();
-    console.log('spawn: dd '+args.join(' '));
-    return childProcess.spawn('dd', args);
-  }
-}
+const Dcfldd = require('./dcfldd');
 
 class Burner extends EventEmitter {
   static dd() {
-    return new DD();
+    return new Dcfldd();
   }
   start(dd, infileSize) {
     const PROGRESS_EVERY = 5000;

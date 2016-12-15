@@ -4,9 +4,11 @@
   "description": "",
   "main": "server",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --progress",
-    "watch": "webpack --progress --watch"
+    "test": "ava",
+    "test:watch": "ava --watch",
+    "test:coverage": "nyc ava",
+    "webpack": "BABEL_ENV=production webpack --progress",
+    "webpack:watch": "BABEL_ENV=production webpack --progress --watch"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +25,7 @@
     "debounce": "^1.0.0",
     "event-stream": "^3.3.4",
     "express": "^4.14.0",
+    "file-type": "^4.0.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
     "minimist": "^1.2.0",
@@ -39,16 +42,36 @@
     "socket.io-client": "^1.7.2",
     "stream-combiner": "^0.2.2",
     "style-loader": "^0.13.1",
+    "superagent": "^3.3.1",
     "webpack": "^1.14.0",
     "wireless-tools": "^0.18.1"
+  },
+  "devDependencies": {
+    "ava": "^0.17.0",
+    "nyc": "^10.0.0"
   },
   "babel": {
     "presets": [
       "es2015",
       "react"
     ],
+    "ignore": "test",
     "plugins": [
       "transform-object-rest-spread"
+    ],
+    "env": {
+      "development": {
+        "sourceMaps": "inline"
+      }
+    }
+  },
+  "ava": {
+    "require": ["babel-core/register"],
+    "files": [
+      "test/**/*-test.js"
+    ],
+    "source": [
+      "{src,lib}/**/*.{js,jsx}"
     ]
   }
 }
