@@ -1,0 +1,31 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet loopback
+
+auto sl0
+iface sl0 inet static
+	address 172.16.1.2
+	netmask 255.255.255.0
+	pointtopoint 172.16.1.1
+	dns-nameservers 8.8.8.8 4.2.2.2
+	pre-up slattach -p slip -s 115200 /dev/ttyAMA0 &
+	pre-up sleep 1
+	post-up ip route add default via 172.16.1.1
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+allow-hotplug usb0
+iface usb0 inet static
+        address 10.5.20.1
+        netmask 255.255.255.0
+
+up iptables-restore < /etc/iptables.ipv4.nat

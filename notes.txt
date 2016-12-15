@@ -85,7 +85,70 @@ https://gitlab.keyvan.pw/crumple/workbench/blob/master/lib/serial-tty.js
 
 it is clear to see how much extra code had to be written to deal with the error-prone-ness of that approach
 
-in the case of inspectpi, however, we have time to look at better approaches (PPP):
+in the case of inspectpi, however, we have time to look at better approaches (SLIP, PPP):
 
 https://en.wikibooks.org/wiki/Serial_Programming/IP_Over_Serial_Connections
 
+## on the pi3:
+sudo slattach -p slip -s 115200 /dev/ttyAMA0 
+sudo ifconfig sl0 10.1.1.1 pointtopoint 10.1.1.0 up 
+sudo route add -host 10.1.1.0  dev sl0
+
+## on the pi zero:
+sudo slattach -p slip -s 115200 /dev/ttyAMA0 
+sudo ifconfig sl0 10.1.1.0 pointtopoint 10.1.1.1 up 
+sudo route add -host 10.1.1.1  dev sl0
+
+
+
+
+that works, but we would need to specify a route for hop
+what if we configure it with our 10.4 and 10.5 addresses?
+
+
+## on the pi3:
+sudo slattach -p slip -s 115200 /dev/ttyAMA0 
+sudo ifconfig sl0 10.5.20.2 pointtopoint 10.5.20.1 up 
+sudo route add -host 10.5.20.1  dev sl0
+
+## on the pi zero:
+sudo slattach -p slip -s 115200 /dev/ttyAMA0 
+sudo ifconfig sl0 10.4.20.2 pointtopoint 10.4.20.1 up 
+sudo route add -host 10.4.20.1  dev sl0
+
+this configuration sets up routes correctly such that
+hosts on the pi3 network can reach hosts on the pizero
+network! ready to set it up for auto-configuration on boot
+
+also useful link:
+
+http://lallafa.de/blog/amiga-projects/plip2slip/plip2slip-setup/
+
+
+ok all configured. pretty sick, will be a little tough to document...
+but let's try. first a diagram:
+
+
+                [ workstation ]
+                [  wifi nic   ]
+                       |
+                       |
+      [         wlan0 (10.4.20.1)       ]
+      [                pi3              ]
+      [   sl0 (172.16.1.1)     wlan1    ]
+              |                  |
+              |                 WAN
+  [   sl0 (172.16.1.2)  ] 
+  [        pizero       ]
+  [         usb0        ]
+             |
+             |
+  [  usb0 (10.5.20.20)  ]
+  [       target        ]
+
+The result of all this is that the workstation,
+pi3, and pi zero can all access the target via
+the static IP: 10.5.20.20
+
+the relevant configs of each are placed in
+folders named pi3, and pizero
