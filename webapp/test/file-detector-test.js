@@ -102,3 +102,26 @@ test('groks an img file as being an ext4 partition', async t=> {
   t.is(type, 'ext4');
   t.deepEqual(contents, []);
 })
+
+test.only('groks an img file containing a bootable image with 2 partitions', async t=> {
+  const line = await fixtures.getLine(9).of('file-stdout.txt');
+  const out = parse(line);
+  const { name, contents, type } = out;
+  t.is(name, '2016-11-25-raspbian-jessie-lite.img');
+  t.is(type, 'bootable disk image');
+  t.deepEqual(contents, [
+    {
+      boot: "mbr"
+    },
+    {
+      type: 'partition',
+      startsector: 8192,
+      sectors: 129024
+    },
+    {
+      type: 'partition',
+      startsector: 137216,
+      sectors: 2578432
+    }
+  ]);
+})

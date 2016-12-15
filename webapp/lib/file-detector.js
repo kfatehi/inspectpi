@@ -1,11 +1,38 @@
+const Promise = require('bluebird');
+const concat = require('concat-stream');
+const spawn = require('child_process').spawn;
+const path = require('path');
+const bin = 'file';
+
 class FileDetector {
+  static examine(filePath) {
+    const args = ['-z', filePath]
+    console.log(`executing ${bin} ${args.join(' ')}`);
+    let o, e, proc = spawn(bin, args);
+    const parse = FileDetector.parseOutput;
+    return new Promise(function(resolve, reject) {
+      proc.stdout.pipe(concat(d=>o=d.toString()))
+      proc.stderr.pipe(concat(d=>e=d.toString()))
+      proc.on('exit', (code) => {
+        if (code === 0) {
+          console.log('trying to parse file string', o);
+          let parsed = parse(o);
+          console.log('got parsed', parsed);
+          console.log('resolving it now');
+          resolve(parsed);
+        } else {
+          reject(e)
+        }
+      })
+    });
+  }
   static parseOutput(line) {
     const keys = ['name', 'type']
     const pattern = /^([^:]+): (.+)$/;
-    const matches = line.match(pattern);
+    const matches = line.trim().match(pattern);
     const desc = FileDetector.parseDescription(matches[2]);
     return {
-      name: matches[1],
+      name: path.basename(matches[1]),
       type: desc.type,
       contents: desc.contents
     };
@@ -27,6 +54,8 @@ class FileDetector {
       return 'ext4';
     } else if (typeString.match(/^ASCII text$/)){
       return 'text';
+    } else if (typeString.match(/partition \d/g) && typeString.match(/boot sector/)){
+      return 'bootable disk image';
     } else {
       return 'unknown';
     }
