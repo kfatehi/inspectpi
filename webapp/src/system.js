@@ -140,7 +140,7 @@ class System extends EventEmitter {
     dd.set('if', infile.path);
     dd.set('of', outfile.path);
     dd.set('bs', options.blockSize || '1M');
-    dd.set('statusinterval', 10);
+    dd.set('statusinterval', 1);
     console.log('removing device from watchlist prior to burn');
     watcher.unwatch(outfile.path);
     this.burner = new Burner();
