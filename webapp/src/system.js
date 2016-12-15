@@ -11,6 +11,7 @@ const watchOpts = {ignoreInitial: true};
 const WirelessEvents = require('../lib/wireless-events');
 const Burner = require('../lib/burner');
 const wifi = require('../lib/wifi');
+const mounter = require('../lib/mounter');
 const fs = require('fs');
 const unlink = Promise.promisify(fs.unlink);
 const rename = Promise.promisify(fs.rename);
@@ -35,7 +36,7 @@ class System extends EventEmitter {
     this.watchWifiClient.start();
     this.state = Object.assign({}, INITIAL_STATE);
     return this.updateFacts([
-      'disks', 'images', 'wifiClient'
+      'disks', 'images', 'wifiClient', 'mounterStatus'
     ]);
   }
   watchDisks(reaction) {
@@ -62,6 +63,7 @@ class System extends EventEmitter {
           case 'disks': return this.getDisks();
           case 'images': return this.getImages();
           case 'wifiClient': return this.getWifiClientStatus();
+          case 'mounterStatus': return this.getMounterStatus();
           default: throw new Error('dont know how to update fact '+factName);
         }
       }
@@ -167,6 +169,12 @@ class System extends EventEmitter {
       watcher.add(outfile.path);
     });
   }
+  burnerClear() {
+    const update = (val) => this.setFact('burnStatus', val);
+    const getState = () => this.state['burnStatus'];
+    const { history } = getState();
+    update({ burning: false, history })
+  }
   burnerInterrupt() {
     this.burner.interrupt()
   }
@@ -224,7 +232,23 @@ class System extends EventEmitter {
     })
   }
   imageOperationExtract(img) {
+    // TODO extraction login, check type for zip or gzip, run the right program, etc
     return console.log(img);
+  }
+  mounterOperationMountDisk() {
+    console.log('mounting');
+    return mounter.mountDisk().then(()=>{
+      return this.updateFacts(['mounterStatus'])
+    });
+  }
+  mounterOperationUnmountDisk() {
+    console.log('unmounting');
+    return mounter.unmountDisk().then(()=>{
+      return this.updateFacts(['mounterStatus'])
+    });
+  }
+  getMounterStatus() {
+    return mounter.getStatus();
   }
 }
 

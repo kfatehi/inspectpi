@@ -3,6 +3,7 @@ import React from 'react';
 import { SimplePrompt } from './SimplePrompt';
 
 export const Operations = ({
+  target,
   status: { burning },
   section,
   setInput,
@@ -10,8 +11,8 @@ export const Operations = ({
   makeImage,
   renameImage,
   burnImage,
-  unlink,
-  target
+  extractImage,
+  unlinkImage,
 }) => {
   const btnBurnerLoadIn = () => <button 
     onClick={()=>setInput(target)}>
@@ -21,8 +22,8 @@ export const Operations = ({
     onClick={()=>setOutput(target)}>
     Load in burner as Output
   </button>;
-  const btnUnlink = () => unlink ? <button
-    onClick={()=>confirm('really?') ? unlink(target) : null}>
+  const btnUnlink = () => unlinkImage ? <button
+    onClick={()=>confirm('really?') ? unlinkImage(target) : null}>
     Delete
   </button> : null;
   const btnRename = () => renameImage ? <SimplePrompt
@@ -38,7 +39,7 @@ export const Operations = ({
     Burn Image
   </button> : null;
   const btnExtract = () => target.type.match(/g?zip$/) ? <button
-    onClick={()=>extract(target)}>
+    onClick={()=>extractImage(target)}>
     Extract
   </button> : null;
   const buttons = () => <div>

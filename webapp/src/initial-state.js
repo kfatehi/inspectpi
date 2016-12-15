@@ -55,5 +55,8 @@ module.exports = {
     //infile: { ...(disk|image) },
     //outfile: { ...(disk|image) },
     //progress: 0.5
+  },
+  mounterStatus: {
+    mounted: false
   }
 };

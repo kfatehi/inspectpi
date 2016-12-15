@@ -11,6 +11,7 @@ export const Burner = React.createClass({
         progress
       },
       start,
+      clear,
       interrupt
     } = this.props;
 
@@ -20,6 +21,7 @@ export const Burner = React.createClass({
           infile too big for outfile
           </span> : <span>
           <button onClick={()=>start()}>Start burn</button>
+          <button onClick={()=>clear()}>Clear</button>
         </span> }
       </div> : null }
     </span>;

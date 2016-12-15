@@ -1,28 +1,15 @@
 const Promise = require('bluebird');
-const concat = require('concat-stream');
-const spawn = require('child_process').spawn;
+const simpleSpawn = require('./simple-spawn');
 const path = require('path');
-const bin = 'file';
 
 class FileDetector {
   static examine(filePath) {
-    const args = ['-z', filePath]
-    let o, e, proc = spawn(bin, args);
-    const parse = FileDetector.parseOutput;
-    return new Promise(function(resolve, reject) {
-      proc.stdout.pipe(concat(d=>o=d.toString()))
-      proc.stderr.pipe(concat(d=>e=d.toString()))
-      proc.on('exit', (code) => {
-        if (code === 0) {
-          let parsed = parse(o);
-          resolve(parsed);
-        } else {
-          reject(e)
-        }
-      })
-    });
+    const bin = 'file';
+    const args = ['-z', '-s', filePath]
+    return simpleSpawn(bin, args).then(FileDetector.parseOutput);
   }
   static parseOutput(line) {
+    if ( !line ) return { name: 'unknown', type: 'unknown', contents: [] }
     const keys = ['name', 'type']
     const pattern = /^([^:]+): (.+)$/;
     const matches = line.trim().match(pattern);

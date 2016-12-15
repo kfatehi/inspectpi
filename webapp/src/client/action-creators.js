@@ -29,6 +29,11 @@ export const burnerStart = () => ({
   type: `BURNER_START`
 })
 
+export const burnerClear = () => ({
+  meta: { remote: true },
+  type: `BURNER_CLEAR`
+})
+
 export const burnerInterrupt = () => ({
   meta: { remote: true },
   type: `BURNER_INTERRUPT`
@@ -57,4 +62,14 @@ export const imageOperationRename = (img, name) => ({
 export const imageOperationExtract = (img) => ({
   meta: { remote: true },
   type: 'IMAGE_OPERATION_EXTRACT', img
+})
+
+export const mounterOperationMountDisk = () => ({
+  meta: { remote: true },
+  type: 'MOUNTER_OPERATION_MOUNT_DISK'
+})
+
+export const mounterOperationUnmountDisk = () => ({
+  meta: { remote: true },
+  type: 'MOUNTER_OPERATION_UNMOUNT_DISK'
 })

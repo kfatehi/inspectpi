@@ -23,12 +23,16 @@ export const MainPage = connect(state=>state, actionCreators)(({
   burnerSetInput,
   burnerSetOutput,
   burnerStart,
+  burnerClear,
   burnerInterrupt,
   imageOperationDuplicate,
   imageOperationBurn,
   imageOperationExtract,
   imageOperationUnlink,
   imageOperationRename,
+  mounterStatus,
+  mounterOperationMountDisk,
+  mounterOperationUnmountDisk,
 })=><div>
   <div>
     <h1>Diagram</h1>
@@ -43,8 +47,18 @@ export const MainPage = connect(state=>state, actionCreators)(({
       makeImage={imageOperationDuplicate}
       target={disk}/>}
   />
-  <PiBootConfigurator />
-  <Burner status={burnStatus} start={burnerStart} interrupt={burnerInterrupt}/>
+  <PiBootConfigurator
+    disks={disks}
+    status={mounterStatus}
+    mountDisk={mounterOperationMountDisk}
+    unmountDisk={mounterOperationUnmountDisk}
+  />
+  <Burner
+    status={burnStatus}
+    start={burnerStart}
+    clear={burnerClear}
+    interrupt={burnerInterrupt}
+  />
   <BurnHistory burns={burnStatus.history} />
   <Images
     images={images}
@@ -54,8 +68,8 @@ export const MainPage = connect(state=>state, actionCreators)(({
       setInput={burnerSetInput}
       makeImage={imageOperationDuplicate}
       burnImage={imageOperationBurn}
-      extract={imageOperationExtract}
-      unlink={imageOperationUnlink}
+      extractImage={imageOperationExtract}
+      unlinkImage={imageOperationUnlink}
       renameImage={imageOperationRename}
       target={img}/>}
   />

@@ -1,5 +1,4 @@
-const concat = require('concat-stream');
-const spawn = require('child_process').spawn;
+const simpleSpawn = require('./simple-spawn');
 const Promise = require('bluebird');
 
 module.exports = function(fields) {
@@ -15,10 +14,5 @@ module.exports = function(fields) {
     },{})
     return obj
   });
-  return new Promise((resolve, reject) => {
-    let o, e, proc = spawn(cmd, opts);
-    proc.stdout.pipe(concat(d=>o=d.toString()))
-    proc.stderr.pipe(concat(d=>e=d.toString()))
-    proc.on('exit', (code) => code === 0 ? resolve(o) : reject(e))
-  }).then(parse)
+  return simpleSpawn(cmd, opts).then(parse);
 }

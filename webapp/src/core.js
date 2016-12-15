@@ -25,6 +25,8 @@ class Core {
         return sys.burnerSetOutput(action.value);
       case 'BURNER_START':
         return sys.burnerStart();
+      case 'BURNER_CLEAR':
+        return sys.burnerClear();
       case 'BURNER_INTERRUPT':
         return sys.burnerInterrupt();
       case 'IMAGE_OPERATION_DUPLICATE':
@@ -37,6 +39,10 @@ class Core {
         return sys.imageOperationUnlink(action.img);
       case 'IMAGE_OPERATION_RENAME':
         return sys.imageOperationRename(action.img, action.name);
+      case 'MOUNTER_OPERATION_MOUNT_DISK':
+        return sys.mounterOperationMountDisk();
+      case 'MOUNTER_OPERATION_UNMOUNT_DISK':
+        return sys.mounterOperationUnmountDisk();
       default:
         console.error('Unhandled action', action.type);
     }
