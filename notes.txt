@@ -128,23 +128,7 @@ http://lallafa.de/blog/amiga-projects/plip2slip/plip2slip-setup/
 ok all configured. pretty sick, will be a little tough to document...
 but let's try. first a diagram:
 
-
-                [ workstation ]
-                [  wifi nic   ]
-                       |
-                       |
-      [         wlan0 (10.4.20.1)       ]
-      [                pi3              ]
-      [   sl0 (172.16.1.1)     wlan1    ]
-              |                  |
-              |                 WAN
-  [   sl0 (172.16.1.2)  ] 
-  [        pizero       ]
-  [         usb0        ]
-             |
-             |
-  [  usb0 (10.5.20.20)  ]
-  [       target        ]
+see diagram.txt
 
 The result of all this is that the workstation,
 pi3, and pi zero can all access the target via

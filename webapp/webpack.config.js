@@ -38,6 +38,7 @@ module.exports = {
       { test: /\.jpe?g$/, loader: "file" },
       { test: /\.gif$/, loader: "file" },
       { test: /\.csv$/, loader: "raw" },
+      { test: /\.txt$/, loader: "raw" },
     ],
     plugins: [
       new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.bundle.js")

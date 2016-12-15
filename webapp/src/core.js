@@ -29,6 +29,10 @@ class Core {
         return sys.burnerInterrupt();
       case 'IMAGE_OPERATION_DUPLICATE':
         return sys.imageOperationDuplicate(action.src);
+      case 'IMAGE_OPERATION_BURN':
+        return sys.imageOperationBurn(action.img);
+      case 'IMAGE_OPERATION_EXTRACT':
+        return sys.imageOperationExtract(action.img);
       case 'IMAGE_OPERATION_UNLINK':
         return sys.imageOperationUnlink(action.img);
       case 'IMAGE_OPERATION_RENAME':

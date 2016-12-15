@@ -171,8 +171,6 @@ class System extends EventEmitter {
     this.burner.interrupt()
   }
   imageOperationDuplicate(src) {
-    //const path = require('path');
-    //const src = { name: 'sda1', path:'/dev/sda1'}
     const now = new Date().getTime();
     const ext = path.extname(src.path)
     const tailPattern = RegExp(`${ext}$`);
@@ -212,6 +210,21 @@ class System extends EventEmitter {
       this.imgWatcher.add(saveTo);
       this.updateFacts(['images'])
     })
+  }
+  imageOperationBurn(img) {
+    this.burnerSetInput(img);
+    this.burnerSetOutput({
+      size: img.size,
+      name: 'sda',
+      path: '/dev/sda',
+      type: 'image'
+    });
+    return this.burnerStart().finally(()=>{
+      this.updateFacts(['disks'])
+    })
+  }
+  imageOperationExtract(img) {
+    return console.log(img);
   }
 }
 

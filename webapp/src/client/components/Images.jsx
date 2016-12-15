@@ -29,16 +29,19 @@ export const Images = React.createClass({
     } = this.props;
     return <div>
       <h1>Images</h1>
-      <Dropzone onDrop={this.onDrop} disablePreview={true}>
-        <div>Try dropping some files here, or click to select files to upload.</div>
+      <Dropzone style={{
+        padding: '5px',
+        border: '1px dashed black',
+      }} onDrop={this.onDrop} disablePreview={true}>
+        <div>Drop disk image files here to upload them, or click to select files to upload.</div>
       </Dropzone>
       <ul>
         {images.map(image=><li key={image.name}>
           {image.name} ({prettyBytes(parseInt(image.size))})
           {operations(image)}
-          <pre>
+          { /* <pre>
             {JSON.stringify(image, null, 4)}
-          </pre>
+          </pre> */ }
         </li>)}
       </ul>
     </div>;

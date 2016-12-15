@@ -33,6 +33,7 @@
     "morgan": "^1.7.0",
     "pretty-bytes": "^4.0.2",
     "progress-stream": "^1.2.0",
+    "raw-loader": "^0.5.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-dropzone": "^3.7.3",
