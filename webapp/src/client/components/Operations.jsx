@@ -29,9 +29,7 @@ export const Operations = ({
           <button onClick={()=>confirm('really?') ? unlink(target) : null}>Delete</button>
           : null
       }
-      <button onClick={()=>makeImage(target)}>
-        { target.type === "image" ? "Duplicate" : "Backup" }
-      </button>
+      <button onClick={()=>makeImage(target)}>Create Image</button>
       { renameImage ? <SimplePrompt
         startLabel={"Rename"}
         initialValue={target.name}

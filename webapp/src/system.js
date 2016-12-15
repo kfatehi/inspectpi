@@ -16,6 +16,7 @@ const unlink = Promise.promisify(fs.unlink);
 const rename = Promise.promisify(fs.rename);
 const progressStream = require('progress-stream');
 const fileType = require('file-type');
+const FileDetector = require('../lib/file-detector');
 const { 
   sdCardDevicePath,
   imagesPath,
@@ -78,13 +79,13 @@ class System extends EventEmitter {
     }))
   }
   getImages() {
-    return readdir(imagesPath).map((name) => {
+    return readdir(imagesPath).mapSeries((name) => {
       const fullpath = path.join(imagesPath, name);
-      //return getFileType(fullpath).then(type
-      return stat(fullpath).then(({size}) => ({
-        name, size, type: 'image' , path: fullpath,
-        //        compressed: 
-      }))
+      return stat(fullpath).then(({size}) => {
+        return FileDetector.examine(fullpath).then(({type, contents})=>({
+          name, size, type, path: fullpath, contents
+        }))
+      })
     })
   }
   getWifiClientStatus() {

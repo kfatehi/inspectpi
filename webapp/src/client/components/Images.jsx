@@ -36,6 +36,9 @@ export const Images = React.createClass({
         {images.map(image=><li key={image.name}>
           {image.name} ({prettyBytes(parseInt(image.size))})
           {operations(image)}
+          <pre>
+            {JSON.stringify(image, null, 4)}
+          </pre>
         </li>)}
       </ul>
     </div>;

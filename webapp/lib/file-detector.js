@@ -7,7 +7,6 @@ const bin = 'file';
 class FileDetector {
   static examine(filePath) {
     const args = ['-z', filePath]
-    console.log(`executing ${bin} ${args.join(' ')}`);
     let o, e, proc = spawn(bin, args);
     const parse = FileDetector.parseOutput;
     return new Promise(function(resolve, reject) {
@@ -15,10 +14,7 @@ class FileDetector {
       proc.stderr.pipe(concat(d=>e=d.toString()))
       proc.on('exit', (code) => {
         if (code === 0) {
-          console.log('trying to parse file string', o);
           let parsed = parse(o);
-          console.log('got parsed', parsed);
-          console.log('resolving it now');
           resolve(parsed);
         } else {
           reject(e)
