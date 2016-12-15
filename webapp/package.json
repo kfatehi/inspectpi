@@ -19,6 +19,7 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
     "bluebird": "^3.4.6",
+    "busboy": "^0.2.13",
     "chokidar": "^1.6.1",
     "concat-stream": "^1.5.2",
     "css-loader": "^0.26.1",
@@ -66,7 +67,9 @@
     }
   },
   "ava": {
-    "require": ["babel-core/register"],
+    "require": [
+      "babel-core/register"
+    ],
     "files": [
       "test/**/*-test.js"
     ],

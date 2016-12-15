@@ -137,9 +137,10 @@ class System extends EventEmitter {
     console.log('HISTORY', history);
     update({ history, burning: true, progress: 0, infile, outfile });
     const dd = Burner.dd();
-    dd.setInfile(infile.path);
-    dd.setOutfile(outfile.path);
-    dd.setBlockSize(options.blockSize || '1M');
+    dd.set('if', infile.path);
+    dd.set('of', outfile.path);
+    dd.set('bs', options.blockSize || '1M');
+    dd.set('statusinterval', 10);
     console.log('removing device from watchlist prior to burn');
     watcher.unwatch(outfile.path);
     this.burner = new Burner();
