@@ -17,7 +17,9 @@ class DD {
     return [
       `if=${this.infile}`,
       `of=${this.outfile}`,
-      `bs=${this.blockSize || '1M'}`
+      `bs=${this.blockSize || '1M'}`,
+      // statusinterval=10
+
     ]
   }
   spawn() {

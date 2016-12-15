@@ -1,1 +1,3 @@
-be able to quickly identify the target device IP from the main pi (from serial console to pi zero for now)
+- [x] be able to quickly identify the target device IP from the main pi => 10.5.20.20
+- [ ] update documentation files in /pizero and /pi3, things like slip and mtu
+
