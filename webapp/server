@@ -7,17 +7,29 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const morgan = require('morgan');
+const Busboy = require('busboy');
 const Core = require('./src/core');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const INDEX_HTML = path.join(PUBLIC_DIR,'index.html');
+const core = new Core();
 
 app.use(morgan('dev'));
 app.use(express.static(PUBLIC_DIR));
 
 app.get('*', (_,res)=>res.sendFile(INDEX_HTML));
 
-const core = new Core();
+app.post('/images', (req, res) => {
+  const busboy = new Busboy({ headers: req.headers });
+  busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    core.system.imageUpload(file, req.headers['content-length'], fieldname)
+  });
+  busboy.on('finish', () => {
+    res.writeHead(201, { 'Connection': 'close' });
+    res.end();
+  });
+  return req.pipe(busboy);
+});
 
-core.init(io).then(()=> http.listen(PORT) ).then(
-  console.log('listening on '+PORT)
-)
+core.init(io)
+  .then(()=>http.listen(PORT))
+  .then(console.log('listening on '+PORT))

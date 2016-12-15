@@ -14,6 +14,7 @@ const wifi = require('../lib/wifi');
 const fs = require('fs');
 const unlink = Promise.promisify(fs.unlink);
 const rename = Promise.promisify(fs.rename);
+const progressStream = require('progress-stream');
 const { 
   sdCardDevicePath,
   imagesPath,
@@ -209,6 +210,19 @@ class System extends EventEmitter {
   imageOperationRename(img, newName) {
     const newPath = path.join(imagesPath, newName);
     return rename(img.path, newPath);
+  }
+  imageUpload(file, length, name) {
+    const saveTo = path.join(imagesPath, path.basename(name));
+    const output = fs.createWriteStream(saveTo);
+    console.log('gonna upload this thing, unwatching path');
+    this.imgWatcher.unwatch(saveTo);
+    const progress = progressStream({ length, time: 100 });
+    progress.on('progress', p => console.log(p.percentage));
+    file.pipe(progress).pipe(output).on('finish', () => {
+      console.log('file done, adding to watch');
+      this.imgWatcher.add(saveTo);
+      this.updateFacts(['images'])
+    })
   }
 }
 
