@@ -162,3 +162,12 @@ As of the November 2016 release, Raspbian has the SSH server disabled by default
 Enter sudo raspi-config in the terminal, first select Interfacing options, then navigate to ssh, press Enter and select  Enable or disable ssh server.
 
 For headless setup, SSH can be enabled by placing a file named 'ssh', without any extension, onto the boot partition of the SD card.
+
+# hterm
+
+added hterm to main project folder (libapps)
+
+embed instructions are here
+https://chromium.googlesource.com/apps/libapps/+/HEAD/hterm/doc/embed.md
+
+LIBDOT_SEARCH_PATH=$(pwd) ./libdot/bin/concat.sh -i    ./hterm/concat/hterm_all.concat -o ../webapp/lib/hterm_all.js
