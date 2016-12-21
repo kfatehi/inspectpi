@@ -47,3 +47,7 @@ sda1-1481798591066.img:
   serial number 0xb176efee,
   label: "boot       ",
   FAT (16 bit)
+
+sda2-1481809040370.img:
+  Linux rev 1.0 ext4 filesystem data,
+  UUID=0aed834e-8c8f-412d-a276-a265dc676112 (extents) (large files)

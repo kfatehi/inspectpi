@@ -23,6 +23,8 @@ class FileDetector {
       return 'gzip';
     } else if (typeString.match(/, FAT \(16 bit\)$/)){
       return 'fat16';
+    } else if (typeString.match(/^Linux rev 1.0 ext4 filesystem data, /)){
+      return 'ext4';
     } else if (typeString.match(/^ASCII text$/)){
       return 'text';
     } else {
@@ -48,7 +50,7 @@ class FileDetector {
           }
         })
         return obj;
-      })
+      }).filter(o=>Object.keys(o).length>0)
   }
 }
 

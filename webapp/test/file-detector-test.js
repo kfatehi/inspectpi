@@ -81,7 +81,7 @@ test('groks another gzip file containing a bootable image with 2 partitions', as
   ]);
 })
 
-test('groks an img file as being the boot partition', async t=> {
+test('groks an img file as being a vfat boot partition', async t=> {
   const line = await fixtures.getLine(5).of('file-stdout.txt');
   const out = parse(line);
   const { name, contents, type } = out;
@@ -92,4 +92,13 @@ test('groks an img file as being the boot partition', async t=> {
       boot: 'mbr'
     }
   ])
+})
+
+test('groks an img file as being an ext4 partition', async t=> {
+  const line = await fixtures.getLine(8).of('file-stdout.txt');
+  const out = parse(line);
+  const { name, contents, type } = out;
+  t.is(name, 'sda2-1481809040370.img');
+  t.is(type, 'ext4');
+  t.deepEqual(contents, []);
 })
