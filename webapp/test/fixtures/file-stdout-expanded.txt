@@ -30,3 +30,20 @@ motioneyeos-raspberrypi3-20161212.img.gz:
     startsector 43008,
     368640 sectors
   (gzip compressed data, was "motioneyeos-raspberrypi3-20161212.img", last modified: Mon Dec 12 12:26:35 2016, from Unix)
+
+
+sda1-1481798591066.img:
+  DOS/MBR boot sector,
+  code offset 0x3c+2,
+  OEM-ID "mkfs.fat",
+  sectors/cluster 16,
+  root entries 512,
+  Media descriptor 0xf8,
+  sectors/FAT 32,
+  sectors/track 63,
+  heads 255,
+  sectors 129024 (volumes > 32 MB) ,
+  reserved 0x1,
+  serial number 0xb176efee,
+  label: "boot       ",
+  FAT (16 bit)

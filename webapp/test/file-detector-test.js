@@ -12,7 +12,7 @@ test('groks zip file containing a bootable image with 2 partitions', async t=> {
   t.is(type, 'zip');
   t.deepEqual(contents, [
     {
-      type: 'DOS/MBR boot sector'
+      boot: "mbr"
     },
     {
       type: 'partition',
@@ -32,7 +32,7 @@ test('groks txt file as being just a text file', async t=> {
   const out = parse(line);
   const { name, contents, type } = out;
   t.is(name, 'foo.txt');
-  t.is(type, 'ASCII text');
+  t.is(type, 'text');
 })
 
 test('groks gzip file containing a bootable image with 2 partitions', async t=> {
@@ -43,7 +43,7 @@ test('groks gzip file containing a bootable image with 2 partitions', async t=> 
   t.is(type, 'gzip');
   t.deepEqual(contents, [
     {
-      type: 'DOS/MBR boot sector'
+      boot: "mbr"
     },
     {
       type: 'partition',
@@ -66,7 +66,7 @@ test('groks another gzip file containing a bootable image with 2 partitions', as
   t.is(type, 'gzip');
   t.deepEqual(contents, [
     {
-      type: 'DOS/MBR boot sector'
+      boot: "mbr"
     },
     {
       type: 'partition',
@@ -84,23 +84,12 @@ test('groks another gzip file containing a bootable image with 2 partitions', as
 test('groks an img file as being the boot partition', async t=> {
   const line = await fixtures.getLine(5).of('file-stdout.txt');
   const out = parse(line);
-  t.fail('cant parse this yet')
   const { name, contents, type } = out;
   t.is(name, 'sda1-1481798591066.img');
-  t.is(type, '');
+  t.is(type, 'fat16');
   t.deepEqual(contents, [
     {
-      type: 'DOS/MBR boot sector'
-    },
-    {
-      type: 'partition',
-      startsector: 8192,
-      sectors: 116736
-    },
-    {
-      type: 'partition',
-      startsector: 124928,
-      sectors: 3930112
+      boot: 'mbr'
     }
-  ]);
+  ])
 })
