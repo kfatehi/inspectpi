@@ -3,6 +3,7 @@ import React from 'react';
 export const Burner = React.createClass({
   render: function() {
     const {
+      mounted,
       status: {
         infile,
         outfile,
@@ -20,7 +21,9 @@ export const Burner = React.createClass({
         { infile.size > outfile.size ? <span>
           infile too big for outfile
           </span> : <span>
-          <button onClick={()=>start()}>Start burn</button>
+          { mounted ? null : <button onClick={()=>start()}>
+            Start burn
+          </button> }
           <button onClick={()=>clear()}>Clear</button>
         </span> }
       </div> : null }

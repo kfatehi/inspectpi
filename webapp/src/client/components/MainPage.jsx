@@ -9,6 +9,7 @@ import { Burner } from './Burner';
 import { Operations } from './Operations';
 import { BurnHistory } from './BurnHistory';
 import { Mounter } from './Mounter';
+import { Architecture } from './Architecture';
 
 export const MainPage = connect(state=>state, actionCreators)(({
   disks,
@@ -35,9 +36,9 @@ export const MainPage = connect(state=>state, actionCreators)(({
   mounterOperationUnmountDisk,
 })=><div>
   <div>
-    <h1>Diagram</h1>
-    <pre>{require('../../../../diagram.txt')}</pre>
+    <p>Welcome to InspectPi.</p>
   </div>
+  <Architecture />
   <Disks
     disks={disks}
     operations={(disk)=><Operations
@@ -54,6 +55,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
     unmountDisk={mounterOperationUnmountDisk}
   />
   <Burner
+    mounted={mounterStatus.mounted}
     status={burnStatus}
     start={burnerStart}
     clear={burnerClear}
@@ -71,6 +73,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
       extractImage={imageOperationExtract}
       unlinkImage={imageOperationUnlink}
       renameImage={imageOperationRename}
+      mounted={mounterStatus.mounted}
       target={img}/>}
   />
   <WifiClient

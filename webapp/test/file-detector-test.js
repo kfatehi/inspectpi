@@ -103,7 +103,7 @@ test('groks an img file as being an ext4 partition', async t=> {
   t.deepEqual(contents, []);
 })
 
-test.only('groks an img file containing a bootable image with 2 partitions', async t=> {
+test('groks an img file containing a bootable image with 2 partitions', async t=> {
   const line = await fixtures.getLine(9).of('file-stdout.txt');
   const out = parse(line);
   const { name, contents, type } = out;

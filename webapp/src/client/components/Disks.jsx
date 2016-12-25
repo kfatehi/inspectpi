@@ -5,7 +5,7 @@ export const Disks = ({
   disks,
   operations
 }) => <div>
-  <h1>Disks</h1>
+  <h1>SD Card</h1>
   <ul>
     {disks.map((disk)=><li key={disk.name}>
       {disk.name} {disk.type} ({prettyBytes(parseInt(disk.size))})

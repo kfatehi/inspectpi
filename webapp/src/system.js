@@ -18,6 +18,7 @@ const rename = Promise.promisify(fs.rename);
 const progressStream = require('progress-stream');
 const fileType = require('file-type');
 const FileDetector = require('../lib/file-detector');
+const extract = require('../lib/extract');
 const { 
   sdCardDevicePath,
   imagesPath,
@@ -231,9 +232,10 @@ class System extends EventEmitter {
       this.updateFacts(['disks'])
     })
   }
-  imageOperationExtract(img) {
-    // TODO extraction login, check type for zip or gzip, run the right program, etc
-    return console.log(img);
+  imageOperationExtract({path, type}) {
+    return extract(path, type).then(()=>{
+      this.updateFacts(['images'])
+    })
   }
   mounterOperationMountDisk() {
     console.log('mounting');

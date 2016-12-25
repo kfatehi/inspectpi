@@ -13,6 +13,7 @@ export const Operations = ({
   burnImage,
   extractImage,
   unlinkImage,
+  mounted,
 }) => {
   const btnBurnerLoadIn = () => <button 
     onClick={()=>setInput(target)}>
@@ -34,10 +35,11 @@ export const Operations = ({
   const btnMakeImage = () => <button onClick={()=>makeImage(target)}>
     { section === 'disk' ? 'Save as Image' : 'Duplicate Image' }
   </button>;
-  const btnBurnImage = () => target.type === 'bootable disk image' ? <button
-    onClick={()=>confirm('really?') ? burnImage(target) : null}>
-    Burn Image
-  </button> : null;
+  const btnBurnImage = () => target.type === 'bootable disk image' ? (
+    mounted ? null : <button
+      onClick={()=>confirm('really?') ? burnImage(target) : null}>
+      Burn Image
+    </button>) : null;
   const btnExtract = () => target.type.match(/g?zip$/) ? <button
     onClick={()=>extractImage(target)}>
     Extract

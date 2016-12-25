@@ -26,8 +26,7 @@ export const Mounter = React.createClass({
 
     const unmountedView = () => <div>
       { disks.length > 0 ? <div>
-        <pre>{JSON.stringify(disks, null, 4)}</pre>
-        btnMount()
+        {btnMount()}
       </div>: "No SD card inserted" }
     </div>
 
