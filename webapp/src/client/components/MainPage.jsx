@@ -57,7 +57,6 @@ export const MainPage = connect(state=>state, actionCreators)(({
     unmountDisk={mounterOperationUnmountDisk}
   />
   <Recipes
-    mounted={mounterStatus.mounted}
     recipes={recipes}
   />
   <Burner
