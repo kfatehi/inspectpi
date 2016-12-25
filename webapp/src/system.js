@@ -19,11 +19,12 @@ const progressStream = require('progress-stream');
 const fileType = require('file-type');
 const FileDetector = require('../lib/file-detector');
 const extract = require('../lib/extract');
-const recipeHandlers = require('./recipe-handlers');
+const recipeRequire = require('../lib/recipe-require');
 const { 
   sdCardDevicePath,
   imagesPath,
-  stateFile
+  stateFile,
+  recipes
 } = require('../config.js');
 
 class System extends EventEmitter {
@@ -37,22 +38,10 @@ class System extends EventEmitter {
     });
     this.watchWifiClient.start();
     this.state = Object.assign({}, INITIAL_STATE);
+    this.recipes = {};
     return this.updateFacts([
-      'disks', 'images', 'wifiClient', 'mounterStatus'
+      'disks', 'images', 'wifiClient', 'mounterStatus', 'recipes'
     ]);
-  }
-  handleRecipeAction({meta: { recipe }, type, data}) {
-    console.log('sys: handle recipe action', recipe);
-    const { mounterStatus: { mounted } } = this.getState();
-    recipeHandlers[recipe]({
-      setState: (val) => {
-        console.log('set recipe state', recipe);
-        this.state['recipeStates'][recipe] = val
-        this.emit('change');
-      },
-      mounted,
-      rootMountPath: mounted ? '/mnt/sdcard' : null
-    })(type, data);
   }
   watchDisks(reaction) {
     this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
@@ -265,10 +254,32 @@ class System extends EventEmitter {
   getMounterStatus() {
     return mounter.getStatus();
   }
+  handleRecipeAction({meta: { recipe }, type, data}) {
+    console.log('sys: handle recipe action', recipe);
+    const {actionHandler, setState} = this.recipes[recipe];
+    actionHandler(setState)(type, data);
+  }
   getRecipes() {
-    return new Promise(function(resolve, reject) {
-      resolve([]);
-    });
+    return Promise.mapSeries(recipes, (recipe)=>{
+      const recipeInit = recipeRequire('init')[recipe];
+      const recipeObject = recipeInit(this.getState());
+      const setRecipeState = val => {
+        console.log('set recipe state', recipe);
+        this.state['recipeStates'][recipe] = val
+        this.emit('change');
+      }
+      recipeObject.setState = setRecipeState;
+      this.recipes[recipe] = recipeObject;
+      if ( recipeObject.disabled ) {
+        return {
+          name: recipe,
+          disabled: recipeObject.disabled,
+          reason: recipeObject.reason
+        }
+      } else {
+        return { name: recipe } 
+      }
+    })
   }
 }
 

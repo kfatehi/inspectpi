@@ -1,4 +1,5 @@
-const recipeStates = require('./recipe-states');
+const recipeClientRequire = require('../lib/recipe-client-require');
+const recipeStates = recipeClientRequire('initial-state');
 
 /**
  * Initial application state.
@@ -60,10 +61,10 @@ module.exports = {
   },
   mounterStatus: {
     mounted: false,
+    // rootMountPath: string (/mnt/sdcard)
   },
   recipes: [
-    // a list of recipe names (strings)
-    // set by the system based on eligibility
+    // { name:string, disabled:bool, reason:string }
   ],
   recipeStates,
 };

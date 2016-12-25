@@ -41,7 +41,7 @@ module.exports = {
       { test: /\.txt$/, loader: "raw" },
     ],
     plugins: [
-      new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.bundle.js")
+      new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.bundle.js"),
     ]
   }
 }
