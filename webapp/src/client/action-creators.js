@@ -73,3 +73,8 @@ export const mounterOperationUnmountDisk = () => ({
   meta: { remote: true },
   type: 'MOUNTER_OPERATION_UNMOUNT_DISK'
 })
+
+export const recipesReloadRecipe = (name) => ({
+  meta: { remote: true },
+  type: 'RECIPES_RELOAD_RECIPE', name
+})

@@ -47,6 +47,8 @@ class Core {
         return sys.mounterOperationMountDisk();
       case 'MOUNTER_OPERATION_UNMOUNT_DISK':
         return sys.mounterOperationUnmountDisk();
+      case 'RECIPES_RELOAD_RECIPE':
+        return sys.recipesReloadRecipe(action.name);
       default:
         console.error('Unhandled action', action.type);
     }

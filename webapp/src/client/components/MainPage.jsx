@@ -35,7 +35,8 @@ export const MainPage = connect(state=>state, actionCreators)(({
   mounterStatus,
   mounterOperationMountDisk,
   mounterOperationUnmountDisk,
-  recipes
+  recipes,
+  recipesReloadRecipe,
 })=><div>
   <div>
     <p>Welcome to InspectPi.</p>
@@ -58,6 +59,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
   />
   <Recipes
     recipes={recipes}
+    reloadRecipe={recipesReloadRecipe}
   />
   <Burner
     mounted={mounterStatus.mounted}

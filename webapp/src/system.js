@@ -38,10 +38,55 @@ class System extends EventEmitter {
     });
     this.watchWifiClient.start();
     this.state = Object.assign({}, INITIAL_STATE);
-    this.recipes = {};
     return this.updateFacts([
       'disks', 'images', 'wifiClient', 'mounterStatus', 'recipes'
-    ]);
+    ])
+  }
+  handleRecipeAction({meta: { recipe }, type, data}) {
+    console.log('sys: handle recipe action', recipe);
+    const {actionHandler, setState} = this.recipes[recipe];
+    const handler = actionHandler(this.getState())(setState);
+    Promise.resolve(handler(type, data)).catch((err)=> {
+      let list = this.state['recipes'];
+      let idx = list.findIndex(r=>r.name === recipe);
+      this.state['recipes'][idx] = {
+        disabled: true,
+        reason:err.message
+      }
+      this.emit('change');
+    })
+  }
+  getRecipes() {
+    this.recipes = {};
+    return Promise.mapSeries(recipes, (recipe)=>{
+      const recipeInit = recipeRequire('index')[recipe];
+      const recipeInitialState = recipeRequire('initial-state')[recipe];
+      const setRecipeState = val => {
+        console.log('set recipe state', recipe);
+        this.state['recipeStates'][recipe] = val
+        this.emit('change');
+      }
+      return Promise.resolve(recipeInit(this.getState())).then(recipeObject => {
+        console.log(recipeObject);
+        if ( recipeObject.disabled ) {
+          return {
+            name: recipe,
+            disabled: recipeObject.disabled,
+            reason: recipeObject.reason
+          }
+        } else {
+          setRecipeState(recipeInitialState);
+          this.recipes[recipe] = {
+            actionHandler: recipeObject,
+            setState: setRecipeState,
+          }
+          return { name: recipe } 
+        }
+      })
+    })
+  }
+  recipesReloadRecipe(name) {
+    this.updateFacts(['recipes'])
   }
   watchDisks(reaction) {
     this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
@@ -253,33 +298,6 @@ class System extends EventEmitter {
   }
   getMounterStatus() {
     return mounter.getStatus();
-  }
-  handleRecipeAction({meta: { recipe }, type, data}) {
-    console.log('sys: handle recipe action', recipe);
-    const {actionHandler, setState} = this.recipes[recipe];
-    actionHandler(setState)(type, data);
-  }
-  getRecipes() {
-    return Promise.mapSeries(recipes, (recipe)=>{
-      const recipeInit = recipeRequire('init')[recipe];
-      const recipeObject = recipeInit(this.getState());
-      const setRecipeState = val => {
-        console.log('set recipe state', recipe);
-        this.state['recipeStates'][recipe] = val
-        this.emit('change');
-      }
-      recipeObject.setState = setRecipeState;
-      this.recipes[recipe] = recipeObject;
-      if ( recipeObject.disabled ) {
-        return {
-          name: recipe,
-          disabled: recipeObject.disabled,
-          reason: recipeObject.reason
-        }
-      } else {
-        return { name: recipe } 
-      }
-    })
   }
 }
 

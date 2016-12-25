@@ -1,9 +1,24 @@
 const wifi = require('../../lib/wifi');
 const ejs = require('ejs');
-const path = require('path');
 const fs = require('fs');
+const filePaths = require('./file-paths');
+const Promise = require('bluebird')
+const stat = Promise.promisify(fs.stat);
+const renderFile = Promise.promisify(ejs.renderFile);
+const writeFile = Promise.promisify(fs.writeFile);
 
-module.exports = rootMountPath => setState => (type, data) => {
+// the action handler can return a promise and
+// should do so when dealing with code that may
+// produce errors. this way, the recipe can be
+// disabled and the error will be displayed as
+// the reason.
+//
+// ideally, you handle the error by updating your
+// recipe's state and providing facilities on your
+// recipe UI to resolve the issue
+module.exports = ({
+  mounterStatus: { mounted, rootMountPath }
+}) => setState => (type, data) => {
   console.log('handling recpe action', type);
   if ( type === "SCAN" ) {
     setState({
@@ -22,17 +37,15 @@ module.exports = rootMountPath => setState => (type, data) => {
       baseStations: []
     });
   } else if (type === "ASSOC") {
-    const tmpl = path.join(__dirname, 'wpa_supplicant.conf.ejs');
-    ejs.renderFile(tmpl, data, {}, function(err, str){
-      if ( err ) throw err;
-      let targetFile = path.join(rootMountPath, '/etc/wpa_supplicant/wpa_supplicant.conf');
-      fs.writeFile(targetFile, str, function(err) {
-        if ( err ) throw err;
-        console.log('done');
-        setState({
-          scanning: false,
-          baseStations: []
-        });
+    const { template, targetFile } = filePaths(rootMountPath);
+    return stat(targetFile).then(()=>{
+      return renderFile(template, data, {})
+    }).then(str=>{
+      return writeFile(targetFile, str)
+    }).then(()=>{
+      setState({
+        scanning: false,
+        baseStations: []
       });
     });
   }

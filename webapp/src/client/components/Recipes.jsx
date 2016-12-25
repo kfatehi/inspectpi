@@ -8,13 +8,18 @@ export const Recipes = React.createClass({
   render: function() {
     const {
       recipes,
+      reloadRecipe
     } = this.props;
 
     console.log('recipes', recipes);
 
+    const btnReload = (name) => <button onClick={()=>reloadRecipe(name)}>
+      Reload
+    </button>;
+
     const getRecipe = ({name, disabled, reason}) => {
       if ( disabled ) {
-        return <p>Recipe {name} disabled: {reason}</p>
+        return <p>Recipe {name} disabled: {reason} {btnReload(name)}</p>
       } else {
         const Recipe = recipeUserInterfaces[name];
         return <div>
