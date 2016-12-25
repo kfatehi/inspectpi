@@ -1,11 +1,10 @@
 import React from 'react';
 
+
 export const Mounter = React.createClass({
   render: function() {
     const {
-      status: { 
-        mounted
-      },
+      mounted,
       disks,
       mountDisk,
       unmountDisk,
@@ -17,10 +16,12 @@ export const Mounter = React.createClass({
 
     const btnUnmount = () => <button onClick={()=>unmountDisk()}>
       Unmount
-    </button>
+    </button>;
 
     const mountedView = () => <div>
-      <span>SD card is mounted at /mnt/sdcard</span>
+      <div>
+        <p>SD card is mounted at /mnt/sdcard</p>
+      </div>
       {btnUnmount()}
     </div>;
 

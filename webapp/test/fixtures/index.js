@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const es = require('event-stream');
 const Promise = require('bluebird');
+const readFile = Promise.promisify(fs.readFile);
 
 const api = {
   createReadStream: filePath => {
@@ -21,7 +22,10 @@ const api = {
           stream.destroy();
         }
       }).on('end', () => reject('end of stream, didnt find the line'))
-  })})
+  })}),
+  readFile: filePath => {
+    return readFile(path.join(__dirname, filePath));
+  }
 }
 
 module.exports = api;

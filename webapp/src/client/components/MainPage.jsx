@@ -10,6 +10,7 @@ import { Operations } from './Operations';
 import { BurnHistory } from './BurnHistory';
 import { Mounter } from './Mounter';
 import { Architecture } from './Architecture';
+import { Recipes } from './Recipes';
 
 export const MainPage = connect(state=>state, actionCreators)(({
   disks,
@@ -34,6 +35,7 @@ export const MainPage = connect(state=>state, actionCreators)(({
   mounterStatus,
   mounterOperationMountDisk,
   mounterOperationUnmountDisk,
+  recipes
 })=><div>
   <div>
     <p>Welcome to InspectPi.</p>
@@ -50,9 +52,13 @@ export const MainPage = connect(state=>state, actionCreators)(({
   />
   <Mounter
     disks={disks}
-    status={mounterStatus}
+    mounted={mounterStatus.mounted}
     mountDisk={mounterOperationMountDisk}
     unmountDisk={mounterOperationUnmountDisk}
+  />
+  <Recipes
+    mounted={mounterStatus.mounted}
+    recipes={recipes}
   />
   <Burner
     mounted={mounterStatus.mounted}

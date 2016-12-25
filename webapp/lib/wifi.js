@@ -3,7 +3,6 @@ const iwconfig = require('wireless-tools/iwconfig');
 const iwlist = require('wireless-tools/iwlist');
 const wpa_cli = require('./wpa_cli');
 
-
 module.exports.getStatus = function(iface) {
   return new Promise(function(resolve, reject) {
     iwconfig.status(iface, function(err, status) {

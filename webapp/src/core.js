@@ -12,6 +12,10 @@ class Core {
   }
   handleAction (action) {
     const sys = this.system;
+    if (action.meta.recipe) {
+      console.log('core: recipe action', action);
+      return sys.handleRecipeAction(action);
+    }
     switch (action.type) {
       case 'WIFI_CLIENT_SCAN':
         return sys.wifiClientScan();

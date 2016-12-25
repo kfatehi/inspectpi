@@ -19,11 +19,10 @@ const mountDisk = () => {
 }
 
 const getStatus = () => simpleSpawn('mountpoint', ['/mnt/sdcard']).then(()=>({
-  mounted: true
+  mounted: true,
 }), ()=>({
-  mounted: false
+  mounted: false,
 }))
-
 
 module.exports = {
   mountDisk,

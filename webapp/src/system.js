@@ -19,6 +19,7 @@ const progressStream = require('progress-stream');
 const fileType = require('file-type');
 const FileDetector = require('../lib/file-detector');
 const extract = require('../lib/extract');
+const recipeHandlers = require('./recipe-handlers');
 const { 
   sdCardDevicePath,
   imagesPath,
@@ -39,6 +40,19 @@ class System extends EventEmitter {
     return this.updateFacts([
       'disks', 'images', 'wifiClient', 'mounterStatus'
     ]);
+  }
+  handleRecipeAction({meta: { recipe }, type, data}) {
+    console.log('sys: handle recipe action', recipe);
+    const { mounterStatus: { mounted } } = this.getState();
+    recipeHandlers[recipe]({
+      setState: (val) => {
+        console.log('set recipe state', recipe);
+        this.state['recipeStates'][recipe] = val
+        this.emit('change');
+      },
+      mounted,
+      rootMountPath: mounted ? '/mnt/sdcard' : null
+    })(type, data);
   }
   watchDisks(reaction) {
     this.sdWatcher = chokidar.watch(sdCardDevicePath, watchOpts);
@@ -65,6 +79,7 @@ class System extends EventEmitter {
           case 'images': return this.getImages();
           case 'wifiClient': return this.getWifiClientStatus();
           case 'mounterStatus': return this.getMounterStatus();
+          case 'recipes': return this.getRecipes();
           default: throw new Error('dont know how to update fact '+factName);
         }
       }
@@ -238,19 +253,22 @@ class System extends EventEmitter {
     })
   }
   mounterOperationMountDisk() {
-    console.log('mounting');
     return mounter.mountDisk().then(()=>{
-      return this.updateFacts(['mounterStatus'])
+      return this.updateFacts(['mounterStatus', 'recipes'])
     });
   }
   mounterOperationUnmountDisk() {
-    console.log('unmounting');
     return mounter.unmountDisk().then(()=>{
-      return this.updateFacts(['mounterStatus'])
+      return this.updateFacts(['mounterStatus', 'recipes'])
     });
   }
   getMounterStatus() {
     return mounter.getStatus();
+  }
+  getRecipes() {
+    return new Promise(function(resolve, reject) {
+      resolve([]);
+    });
   }
 }
 

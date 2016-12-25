@@ -1,3 +1,5 @@
+const recipeStates = require('./recipe-states');
+
 /**
  * Initial application state.
  *
@@ -57,6 +59,11 @@ module.exports = {
     //progress: 0.5
   },
   mounterStatus: {
-    mounted: false
-  }
+    mounted: false,
+  },
+  recipes: [
+    // a list of recipe names (strings)
+    // set by the system based on eligibility
+  ],
+  recipeStates,
 };
