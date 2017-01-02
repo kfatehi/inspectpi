@@ -1,4 +1,5 @@
 - [x] be able to quickly identify the target device IP from the main pi => 10.5.20.20
 - [ ] update documentation files in /pizero and /pi3, things like slip and mtu
 - [ ] consider this patch https://github.com/cnvogelg/plip2slip/tree/master/contrib/slattach
+- [ ] recipe: wifi repeater
 
